@@ -36,5 +36,10 @@
 ## DEC-012 — Timeline state
 **Decision:** Selected historical year is a first-class global UI/domain query state.
 
+## DEC-013 — Optional event-person role key
+**Decision:** `event_people.role_code` is stored as an empty string when no role is specified.
+
+**Reason:** The documented composite primary key includes `role_code`, and PostgreSQL primary-key columns cannot be NULL. The empty value preserves an optional role without weakening uniqueness.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.
