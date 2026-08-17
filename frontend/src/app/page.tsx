@@ -1,22 +1,22 @@
-import { BackendStatus } from "@/components/backend-status";
+import { MapWorkspace } from "@/features/map/components/map-workspace";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6 py-16">
-      <section className="w-full max-w-2xl rounded-xl border border-slate-200 bg-white p-8 shadow-sm sm:p-12">
-        <p className="mb-4 text-sm font-medium tracking-wide text-slate-500" dir="ltr">
-          PROJECT FOUNDATION
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight text-slate-950">
-          Abbasid TimeMap
-        </h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-slate-700" dir="rtl">
-          منصة تفاعلية لاستكشاف التاريخ العباسي عبر الزمن والخريطة.
-        </p>
-        <div className="mt-8 border-t border-slate-200 pt-5">
-          <BackendStatus />
+    <main className="flex min-h-screen flex-col bg-[var(--background-primary)] px-4 py-4 text-[var(--text-primary)] sm:px-6 lg:px-8">
+      <header className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-6 border-b border-[var(--border-subtle)] px-1 pb-4">
+        <div>
+          <p className="mb-1 text-[10px] tracking-[0.24em] text-[var(--gold-primary)]" dir="ltr">
+            ABBASID TIMEMAP
+          </p>
+          <h1 className="text-xl font-semibold sm:text-2xl">خريطة الزمن العباسي</h1>
         </div>
-      </section>
+        <p className="hidden max-w-md text-sm leading-6 text-[var(--text-muted)] sm:block">
+          استكشف السجل التاريخي المنشور على خريطة تفاعلية.
+        </p>
+      </header>
+      <div className="mx-auto mt-4 flex w-full max-w-[1600px] flex-1">
+        <MapWorkspace />
+      </div>
     </main>
   );
 }

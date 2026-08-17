@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import "maplibre-gl/dist/maplibre-gl.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Abbasid TimeMap",
-  description: "An interactive platform for exploring Abbasid history.",
+  title: "خريطة الزمن العباسي",
+  description: "منصة تفاعلية لاستكشاف التاريخ العباسي عبر الزمن والخريطة.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

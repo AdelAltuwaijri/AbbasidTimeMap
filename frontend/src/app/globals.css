@@ -1,8 +1,50 @@
 @import "tailwindcss";
 
+:root {
+  --background-primary: #0d100e;
+  --background-elevated: #1a1d19;
+  --gold-primary: #c99745;
+  --text-primary: #f2eadb;
+  --text-muted: #a9a294;
+  --border-subtle: #3a392f;
+  --status-high-confidence: #77a883;
+  --status-disputed: #b56d5c;
+  --event-battle: #a74b3f;
+  --event-science: #4f8792;
+  --event-political: #c99745;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--background-primary);
+  color: var(--text-primary);
+  font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.maplibregl-map,
+.maplibregl-control-container {
+  direction: ltr;
+}
+
+.maplibregl-ctrl-group {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--background-elevated);
+}
+
+.maplibregl-ctrl-group button {
+  background-color: var(--background-elevated);
+}
+
+.maplibregl-ctrl-group button .maplibregl-ctrl-icon {
+  filter: invert(92%) sepia(10%) saturate(310%);
+}
+
+.maplibregl-ctrl-attrib {
   font-family: Arial, Helvetica, sans-serif;
+  direction: ltr;
 }
