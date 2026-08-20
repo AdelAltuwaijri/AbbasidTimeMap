@@ -16,7 +16,8 @@ export const BOUNDARY_OUTLINE_LAYER_ID = "historical-boundaries-outline";
 export const BASEMAP_SOURCE_ID = "reference-basemap";
 export const BASEMAP_LAYER_ID = "reference-basemap-raster";
 
-export const BASEMAP_TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+export const BASEMAP_TILE_URL =
+  "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpeg";
 
 export function createMapStyle(): string | StyleSpecification {
   return {
@@ -27,8 +28,9 @@ export function createMapStyle(): string | StyleSpecification {
         type: "raster",
         tiles: [BASEMAP_TILE_URL],
         tileSize: 256,
+        maxzoom: 8,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
+          'Imagery: <a href="https://www.earthdata.nasa.gov/gibs">NASA Global Imagery Browse Services (GIBS)</a>, NASA/GSFC/ESDIS',
       },
     },
     layers: [
@@ -41,6 +43,11 @@ export function createMapStyle(): string | StyleSpecification {
         id: BASEMAP_LAYER_ID,
         type: "raster",
         source: BASEMAP_SOURCE_ID,
+        paint: {
+          "raster-saturation": -0.35,
+          "raster-contrast": 0.1,
+          "raster-brightness-max": 0.72,
+        },
       },
     ],
   };

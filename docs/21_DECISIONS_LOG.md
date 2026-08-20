@@ -41,5 +41,10 @@
 
 **Reason:** The documented composite primary key includes `role_code`, and PostgreSQL primary-key columns cannot be NULL. The empty value preserves an optional role without weakening uniqueness.
 
+## DEC-014 — Historically neutral base map
+**Decision:** Modern political labels and boundaries must never be part of the base map; historical labels and boundaries are application-controlled temporal layers.
+
+**Reason:** The base map is a geography reference only. It may show natural land, water, rivers, and terrain, but provider-controlled modern country, administrative, city, road, and POI information would misrepresent the selected historical period. Events, political boundaries, places, and labels therefore remain separate historical data layers owned by Abbasid TimeMap.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.
