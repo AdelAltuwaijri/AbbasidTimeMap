@@ -1,0 +1,148 @@
+[
+  {
+    "key":"tabari-vol-27",
+    "source_type":"later_classical_chronicle_scholarly_edition",
+    "title":"The History of al-Ṭabarī, Vol. 27: The ʿAbbāsid Revolution, A.D. 743–750/A.H. 126–132",
+    "author":"al-Ṭabarī; translated by John Alden Williams",
+    "edition":"SUNY Series in Near Eastern Studies",
+    "publication_data":"State University of New York Press, 1985; digital edition 2015",
+    "url":"https://www.degruyterbrill.com/document/doi/10.1515/9781438424118/html",
+    "notes":"Annotated scholarly translation used as a chronological near-classical source; individual reports are assessed against modern scholarship."
+  },
+  {
+    "key":"tabari-vol-28",
+    "source_type":"later_classical_chronicle_scholarly_edition",
+    "title":"The History of al-Ṭabarī, Vol. 28: ʿAbbāsid Authority Affirmed: The Early Years of al-Manṣūr, A.D. 753–763/A.H. 136–145",
+    "author":"al-Ṭabarī; translated by Jane Dammen McAuliffe",
+    "edition":"SUNY Series in Near Eastern Studies",
+    "publication_data":"State University of New York Press, 1995",
+    "notes":"Annotated scholarly translation covering al-Manṣūr's accession, Abū Muslim, provincial revolts, and 145 AH."
+  },
+  {
+    "key":"tabari-vol-29",
+    "source_type":"later_classical_chronicle_scholarly_edition",
+    "title":"The History of al-Ṭabarī, Vol. 29: Al-Manṣūr and al-Mahdī, A.D. 763–786/A.H. 146–169",
+    "author":"al-Ṭabarī; translated by Hugh Kennedy",
+    "edition":"SUNY Series in Near Eastern Studies",
+    "publication_data":"State University of New York Press, 1990",
+    "url":"https://utpdistribution.com/9780791401439/the-history-of-al-abari-vol-29/",
+    "notes":"Annotated scholarly translation organized by Hijri year for the later reign of al-Manṣūr and reign of al-Mahdī."
+  },
+  {
+    "key":"tabari-vol-30",
+    "source_type":"later_classical_chronicle_scholarly_edition",
+    "title":"The History of al-Ṭabarī, Vol. 30: The ʿAbbāsid Caliphate in Equilibrium",
+    "author":"al-Ṭabarī; translated by C. E. Bosworth",
+    "edition":"SUNY Series in Near Eastern Studies",
+    "publication_data":"State University of New York Press, 1989",
+    "notes":"Annotated scholarly translation covering the caliphates of Mūsā al-Hādī and Hārūn al-Rashīd."
+  },
+  {
+    "key":"kennedy-early-abbasid",
+    "source_type":"modern_academic_monograph",
+    "title":"The Early Abbasid Caliphate: A Political History",
+    "author":"Hugh Kennedy",
+    "edition":"First edition",
+    "publication_data":"Croom Helm, London, 1981",
+    "notes":"Modern political synthesis used to cross-check chronology, institutional significance, and provincial context."
+  },
+  {
+    "key":"iranica-abbasid-caliphate",
+    "source_type":"scholarly_encyclopedia",
+    "title":"ʿABBASID CALIPHATE",
+    "author":"C. E. Bosworth",
+    "publication_data":"Encyclopaedia Iranica, Vol. I, Fasc. 1, pp. 89–95",
+    "url":"https://www.iranicaonline.org/articles/abbasid-caliphate/",
+    "notes":"Scholarly overview of the revolution, early institutions, Iranian participation, and the Barmakids."
+  },
+  {
+    "key":"iranica-abu-muslim",
+    "source_type":"scholarly_encyclopedia",
+    "title":"ABŪ MOSLEM ḴORĀSĀNĪ",
+    "author":"Ḡolām-Ḥosayn Yūsofī",
+    "publication_data":"Encyclopaedia Iranica, Vol. I, Fasc. 4, pp. 341–344",
+    "url":"https://www.iranicaonline.org/articles/abu-moslem-abd-al-rahman-b/",
+    "notes":"Detailed scholarly account of the revolution, first Abbasid years, and Abū Muslim's death and aftermath."
+  },
+  {
+    "key":"iranica-khorasan-abbasid",
+    "source_type":"scholarly_encyclopedia",
+    "title":"KHORASAN v. History in the ʿAbbasid Period",
+    "author":"Elton L. Daniel",
+    "publication_data":"Encyclopaedia Iranica",
+    "url":"https://www.iranicaonline.org/articles/khorasan-v-history-in-the-%CA%BFabbasid-period/",
+    "notes":"Regional synthesis for the revolution, al-Mahdī at Ray, ʿAbd al-Jabbār's revolt, and Khurasani politics."
+  },
+  {
+    "key":"iranica-baghdad",
+    "source_type":"scholarly_encyclopedia",
+    "title":"BAGHDAD i. The Iranian Connection: Before the Mongol Invasion",
+    "author":"Hugh Kennedy",
+    "publication_data":"Encyclopaedia Iranica, Vol. III, Fasc. 4, pp. 412–415 (1988; updated 2016)",
+    "url":"https://www.iranicaonline.org/articles/baghdad/baghdad-iranian-connection-i-pr-mongol/",
+    "notes":"States that Baghdad was founded in 145/762 by al-Manṣūr and discusses the 151/768 eastern settlement."
+  },
+  {
+    "key":"iranica-muqanna",
+    "source_type":"scholarly_encyclopedia",
+    "title":"MOQANNAʿ",
+    "author":"Patricia Crone",
+    "publication_data":"Encyclopaedia Iranica, 2011; updated 2018",
+    "url":"https://www.iranicaonline.org/articles/moqanna/",
+    "notes":"Critical account of Hāšem b. Ḥakim, the movement in Sogdiana, and the uncertainty around its start and his death."
+  },
+  {
+    "key":"iranica-herat",
+    "source_type":"scholarly_encyclopedia",
+    "title":"HERAT iii. HISTORY, MEDIEVAL PERIOD",
+    "author":"C. E. Bosworth",
+    "publication_data":"Encyclopaedia Iranica, Vol. XII, Fasc. 2, pp. 203–211",
+    "url":"https://www.iranicaonline.org/articles/herat-iii/",
+    "notes":"Documents the revolt of Ostāḏsis in Herat and Bādghīs in 150/767 and the anti-Moqannaʿ campaign."
+  },
+  {
+    "key":"iranica-barmakids",
+    "source_type":"scholarly_encyclopedia",
+    "title":"BARMAKIDS",
+    "author":"Ihsan Abbas",
+    "publication_data":"Encyclopaedia Iranica, Vol. III, Fasc. 8, pp. 806–809",
+    "url":"https://www.iranicaonline.org/articles/barmakids/",
+    "notes":"Scholarly account of early Abbasid service, Yaḥyā's role with Hārūn, and his vizierate from 170/786."
+  },
+  {
+    "key":"iranica-harun",
+    "source_type":"scholarly_encyclopedia",
+    "title":"HĀRUN AL-RAŠID",
+    "author":"C. E. Bosworth",
+    "publication_data":"Encyclopaedia Iranica, Vol. XII, Fasc. 1, pp. 14–20",
+    "url":"https://www.iranicaonline.org/articles/harun-al-rasid/",
+    "notes":"Scholarly overview of Hārūn's background, Byzantine campaigns, succession, and caliphate."
+  },
+  {
+    "key":"iranica-jafar-sadiq",
+    "source_type":"scholarly_encyclopedia",
+    "title":"JAʿFAR AL-ṢĀDEQ i. Life",
+    "author":"Robert Gleave",
+    "publication_data":"Encyclopaedia Iranica, Vol. XIV, Fasc. 4, pp. 349–351 (2008; updated 2017)",
+    "url":"https://www.iranicaonline.org/articles/jafar-al-sadeq-i-life/",
+    "notes":"Records the widely agreed death year 148/765 while treating the poisoning report as uncertain."
+  },
+  {
+    "key":"iranica-chinese-iranian",
+    "source_type":"scholarly_encyclopedia",
+    "title":"CHINESE-IRANIAN RELATIONS ii. Islamic Period to the Mongols",
+    "author":"J. M. Rogers",
+    "publication_data":"Encyclopaedia Iranica, Vol. V, Fasc. 4, pp. 424–429",
+    "url":"https://www.iranicaonline.org/articles/chinese-iranian-ii/",
+    "notes":"Places the defeat at Ṭarāz/Talas in the longer decline of Tang political intervention in Central Asia."
+  },
+  {
+    "key":"elad-nafs-zakiyya",
+    "source_type":"modern_academic_monograph",
+    "title":"The Rebellion of Muḥammad al-Nafs al-Zakiyya in 145/762",
+    "author":"Amikam Elad",
+    "edition":"Islamic History and Civilization, Volume 118",
+    "publication_data":"Brill, Leiden and Boston, 2016",
+    "notes":"Focused modern study of the Hasanid rebellion in Medina and its Iraqi extension under Ibrāhīm."
+  }
+]

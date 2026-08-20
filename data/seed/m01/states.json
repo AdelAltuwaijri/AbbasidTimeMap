@@ -1,0 +1,6 @@
+[
+  {"slug":"abbasid-caliphate","name_ar":"الخلافة العباسية","name_en":"Abbasid Caliphate","state_type":"caliphate","start_date":{"year":132,"precision":"year","display_label_ar":"من 132هـ","display_label_en":"from 750 CE"},"relation_to_abbasid":"self"},
+  {"slug":"umayyad-caliphate","name_ar":"الخلافة الأموية","name_en":"Umayyad Caliphate","state_type":"caliphate","end_date":{"year":132,"precision":"year","display_label_ar":"انتهاء الحكم المركزي بالمشرق سنة 132هـ","display_label_en":"central eastern rule ended 750 CE"},"relation_to_abbasid":"predecessor"},
+  {"slug":"hasanid-opposition","name_ar":"الحركة الحسنية المعارضة","name_en":"Hasanid opposition","state_type":"political_movement","relation_to_abbasid":"opposition_movement"},
+  {"slug":"khurramiyya-movements","name_ar":"الحركات الخرمية وأصحاب البياض","name_en":"Khurramiyya and White-Clad movements","state_type":"socio_religious_movement","start_date":{"year":137,"precision":"approximate","circa":true,"display_label_ar":"من نحو 137هـ","display_label_en":"from c. 755 CE"},"relation_to_abbasid":"regional_opposition_movements"}
+]

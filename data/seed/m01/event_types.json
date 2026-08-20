@@ -1,0 +1,13 @@
+[
+  {"code":"accession","name_ar":"تولية خليفة","name_en":"Caliphal accession","icon_key":"crown"},
+  {"code":"battle","name_ar":"معركة","name_en":"Battle","icon_key":"battle"},
+  {"code":"campaign","name_ar":"حملة عسكرية","name_en":"Military campaign","icon_key":"campaign"},
+  {"code":"city_founded","name_ar":"تأسيس مدينة","name_en":"City foundation","icon_key":"city"},
+  {"code":"cultural","name_ar":"حدث علمي أو ثقافي","name_en":"Cultural or scholarly event","icon_key":"book"},
+  {"code":"death","name_ar":"وفاة","name_en":"Death","icon_key":"person"},
+  {"code":"political","name_ar":"حدث سياسي أو إداري","name_en":"Political or administrative event","icon_key":"government"},
+  {"code":"revolt","name_ar":"ثورة أو تمرد","name_en":"Revolt","icon_key":"revolt"},
+  {"code":"state_fallen","name_ar":"سقوط كيان سياسي","name_en":"Fall of a political state","icon_key":"state"},
+  {"code":"state_founded","name_ar":"قيام كيان سياسي","name_en":"Foundation of a political state","icon_key":"state"},
+  {"code":"succession","name_ar":"ترتيب ولاية العهد","name_en":"Succession arrangement","icon_key":"succession"}
+]

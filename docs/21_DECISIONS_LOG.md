@@ -46,5 +46,14 @@
 
 **Reason:** The base map is a geography reference only. It may show natural land, water, rivers, and terrain, but provider-controlled modern country, administrative, city, road, and POI information would misrepresent the selected historical period. Events, political boundaries, places, and labels therefore remain separate historical data layers owned by Abbasid TimeMap.
 
+## DEC-015 — Reviewed corpus files and atomic import
+**Decision:** M-01 historical seed content is stored as normalized UTF-8 JSON under `data/seed/m01/`, validated as one complete relationship graph, and imported atomically by stable canonical keys. A deterministic committed manifest must match the validated files.
+
+**Reason:** Separating Arabic historical content from Python makes citations and relationships reviewable, while validation before persistence rejects unsourced publication, temporal inversions, invalid geometry, unknown types, orphaned relationships, duplicate slugs, and manifest drift. Idempotent canonical upserts preserve F-05 identity and allow the corpus to expand without duplicate entities.
+
+**Source strategy:** The scholarly SUNY translation of al-Ṭabarī volumes 27–30 is the chronological near-classical backbone. Modern synthesis and confidence judgments are cross-checked with Hugh Kennedy's *The Early Abbasid Caliphate* and focused Encyclopaedia Iranica articles or academic monographs. AI output is not a source.
+
+**Scope note:** M-01 creates application-owned historical place labels and relationships but no political boundary geometry. The physical base map remains governed by DEC-014; M-02 remains responsible for sourced temporal boundary reconstruction.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.

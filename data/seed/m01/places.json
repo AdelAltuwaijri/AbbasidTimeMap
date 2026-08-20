@@ -1,0 +1,22 @@
+[
+  {"slug":"great-zab","name_ar":"نهر الزاب الكبير","name_en":"Great Zab","place_type":"battle_site","modern_reference":"موضع المعركة كان على الزاب الكبير؛ لا تُسند نقطة دقيقة لعدم اليقين في موقع الاشتباك."},
+  {"slug":"kufa","name_ar":"الكوفة","name_en":"Kufa","place_type":"city","point":[44.4,32.03],"modern_reference":"نقطة تقريبية لموضع الكوفة التاريخية قرب المدينة الحالية، وليست تحديدًا لمنشأة بعينها."},
+  {"slug":"damascus","name_ar":"دمشق","name_en":"Damascus","place_type":"city","point":[36.2913,33.5102],"modern_reference":"نقطة مركزية تقريبية للمدينة التاريخية، لا حد إداري حديث."},
+  {"slug":"fustat","name_ar":"الفسطاط","name_en":"Fustat","place_type":"city","point":[31.23,30.0],"modern_reference":"مرجع تقريبي لموضع الفسطاط التاريخي ضمن القاهرة الحالية، بلا حدود إدارية حديثة."},
+  {"slug":"wasit","name_ar":"واسط","name_en":"Wasit","place_type":"city","point":[45.82,32.5],"modern_reference":"نقطة تقريبية لموقع واسط الأثري وليست إحداثية لمنشأة محددة."},
+  {"slug":"talas","name_ar":"طراز (تلاس)","name_en":"Talas (Taraz)","place_type":"battle_site","point":[71.37,42.9],"modern_reference":"مرجع إقليمي تقريبي لوادي طراز؛ موضع معركة 133هـ غير ممثل بدقة أثرية."},
+  {"slug":"hashimiyya-anbar","name_ar":"الهاشمية بالأنبار","name_en":"al-Hāshimiyya near al-Anbar","place_type":"settlement","point":[43.61,33.42],"modern_reference":"مرجع تقريبي لمنطقة الأنبار التاريخية؛ موقع الهاشمية لا يُعرض كحد أو مركز حديث."},
+  {"slug":"nahr-abi-futrus","name_ar":"نهر أبي فطرس","name_en":"Nahr Abī Fuṭrus","place_type":"battle_site","modern_reference":"موقع تاريخي في فلسطين اختلف تحديده؛ تُحفظ المعركة بلا نقطة لتجنب الدقة الزائفة."},
+  {"slug":"rayy","name_ar":"الري","name_en":"Rayy","place_type":"city","point":[51.44,35.6],"modern_reference":"نقطة تقريبية للري التاريخية قرب طهران الحالية، وليست تسمية أو حدًا حديثًا."},
+  {"slug":"nishapur","name_ar":"نيسابور","name_en":"Nishapur","place_type":"city","point":[58.79,36.21],"modern_reference":"مرجع تقريبي للنطاق التاريخي لنيسابور، لا تحديد لمنشأة بعينها."},
+  {"slug":"khorasan","name_ar":"خراسان","name_en":"Khurasan","place_type":"region","modern_reference":"إقليم تاريخي واسع متغير؛ لا تُستخدم له حدود أو نقطة سياسية حديثة في M-01."},
+  {"slug":"medina","name_ar":"المدينة المنورة","name_en":"Medina","place_type":"city","point":[39.61,24.47],"modern_reference":"مرجع تقريبي للمدينة التاريخية، بلا حدود إدارية حديثة."},
+  {"slug":"basra","name_ar":"البصرة","name_en":"Basra","place_type":"city","point":[47.78,30.51],"modern_reference":"نقطة تقريبية للنطاق التاريخي للبصرة، لا مركزًا إداريًا حديثًا."},
+  {"slug":"baghdad","name_ar":"بغداد","name_en":"Baghdad","place_type":"city","point":[44.3661,33.3152],"modern_reference":"نقطة مرجعية تقريبية لبغداد الحديثة؛ لا تمثل مركز المدينة المدورة الأثري بدقة."},
+  {"slug":"herat","name_ar":"هراة","name_en":"Herat","place_type":"city","point":[62.2,34.35],"modern_reference":"نقطة تقريبية للمدينة التاريخية؛ تمرد أستاذسيس شمل هراة وبادغيس على نطاق أوسع."},
+  {"slug":"transoxiana","name_ar":"ما وراء النهر","name_en":"Transoxiana","place_type":"region","modern_reference":"إقليم تاريخي واسع بلا حدود حديثة أو نقطة مصطنعة؛ يُترك غير مكاني في M-01."},
+  {"slug":"rafiqa","name_ar":"الرافقة","name_en":"al-Rāfiqa","place_type":"city","point":[39.0,35.95],"modern_reference":"نقطة تقريبية للرافقة التاريخية المتصلة بالرقة، لا حدود حضرية حديثة."},
+  {"slug":"mecca","name_ar":"مكة","name_en":"Mecca","place_type":"city","point":[39.826,21.42],"modern_reference":"مرجع تقريبي للمدينة التاريخية، بلا حدود إدارية حديثة."},
+  {"slug":"fakhkh","name_ar":"فخ","name_en":"Fakhkh","place_type":"battle_site","modern_reference":"وادٍ قرب مكة؛ تُحفظ الوقعة بلا نقطة دقيقة بسبب عدم اليقين المكاني."},
+  {"slug":"constantinople","name_ar":"القسطنطينية","name_en":"Constantinople","place_type":"city","point":[28.98,41.01],"modern_reference":"مرجع تقريبي للمدينة التاريخية على البوسفور؛ لا يعتمد اسمًا سياسيًا حديثًا في العرض التاريخي."}
+]
