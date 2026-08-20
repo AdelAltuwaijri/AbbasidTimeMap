@@ -2,10 +2,12 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchTimelineState } from "@/features/timeline/api/timeline-client";
+import { fetchEventDetail } from "@/features/events/api/event-client";
 import type { EventFeatureCollection } from "../types";
 import { MapWorkspace } from "./map-workspace";
 
 vi.mock("@/features/timeline/api/timeline-client", () => ({ fetchTimelineState: vi.fn() }));
+vi.mock("@/features/events/api/event-client", () => ({ fetchEventDetail: vi.fn() }));
 vi.mock("./historical-map", () => ({
   HistoricalMap: ({
     eventsVisible,
@@ -48,6 +50,14 @@ const COLLECTION: EventFeatureCollection = {
   ],
 };
 
+const DETAIL = {
+  id: "event-1", slug: "fixture-event", title_ar: "حدث اختباري", title_en: "Fixture event",
+  date_display_ar: "145 هـ (762 م)", date_display_en: "145 AH / 762 CE", year_start_hijri: 145,
+  year_end_hijri: null, gregorian_reference: "762 CE", event_type: { code: "political", name_ar: "سياسي", name_en: "Political" },
+  summary_ar: "ملخص تاريخي موثق", importance: 3, confidence: "high", primary_place: { slug: "baghdad", name_ar: "بغداد", name_en: "Baghdad" },
+  related_people: [], related_states: [], sources: [{ title: "مصدر موثوق", author: "مؤلف", edition: null, publication_data: "بيانات نشر", url: "https://example.test/source", citation_locator: "فقرة البداية", support_type: "direct", reliability_note: null }],
+};
+
 describe("MapWorkspace", () => {
   afterEach(cleanup);
 
@@ -60,6 +70,7 @@ describe("MapWorkspace", () => {
       event_features: COLLECTION,
       boundaries: { type: "FeatureCollection", features: [] },
     });
+    vi.mocked(fetchEventDetail).mockResolvedValue(DETAIL);
   });
 
   it("loads the map shell and GeoJSON data", async () => {
@@ -78,14 +89,31 @@ describe("MapWorkspace", () => {
     expect(screen.getByText("events-hidden")).toBeInTheDocument();
   });
 
-  it("keeps the selected event id and exposes a selection highlight card", async () => {
+  it("opens an RTL drawer with sourced detail and closes it without changing selection year", async () => {
     render(<MapWorkspace />);
     await screen.findByText("events-visible");
 
     fireEvent.click(screen.getByRole("button", { name: "test marker" }));
 
     expect(screen.getByText("event-1")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "حدث اختباري" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "حدث اختباري" })).toBeInTheDocument();
+    expect(screen.getByText("المصادر التاريخية")).toBeInTheDocument();
+    expect(screen.getByText("موثق بدرجة عالية")).toBeInTheDocument();
+    const close = screen.getByRole("button", { name: "إغلاق تفاصيل الحدث" });
+    expect(close).toHaveFocus();
+    fireEvent.click(close);
+    expect(screen.queryByRole("heading", { name: "حدث اختباري" })).not.toBeInTheDocument();
+  });
+
+  it("shows a retryable Arabic drawer error without changing timeline selection", async () => {
+    vi.mocked(fetchEventDetail).mockRejectedValueOnce(new Error("offline")).mockResolvedValueOnce(DETAIL);
+    render(<MapWorkspace />);
+    await screen.findByText("events-visible");
+    fireEvent.click(screen.getByRole("button", { name: "test marker" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("تعذّر تحميل تفاصيل الحدث");
+    fireEvent.click(screen.getByRole("button", { name: "إعادة المحاولة" }));
+    expect(await screen.findByRole("heading", { name: "حدث اختباري" })).toBeInTheDocument();
+    expect(fetchTimelineState).toHaveBeenCalledOnce();
   });
 
   it("keeps layer visibility and clears a selection after the new year excludes it", async () => {

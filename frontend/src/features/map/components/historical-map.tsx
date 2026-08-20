@@ -57,6 +57,12 @@ export function HistoricalMap({
   }, [selectedEventId]);
 
   useEffect(() => {
+    if (!selectedEventId) return;
+    const selected = events.features.find((feature) => feature.properties.id === selectedEventId);
+    if (selected) mapRef.current?.flyTo({ center: selected.geometry.coordinates, zoom: Math.max(mapRef.current.getZoom(), 6), essential: true });
+  }, [events.features, selectedEventId]);
+
+  useEffect(() => {
     selectHandlerRef.current = onSelectEvent;
   }, [onSelectEvent]);
 

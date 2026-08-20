@@ -5,6 +5,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchTimelineState } from "@/features/timeline/api/timeline-client";
 import { TimelineBar } from "@/features/timeline/components/timeline-bar";
 import { useTimelineState } from "@/features/timeline/state/timeline-state";
+import { fetchEventDetail } from "@/features/events/api/event-client";
+import { EventDrawer } from "@/features/events/components/event-drawer";
+import type { EventDetail } from "@/features/events/types";
 import { useMapUiState } from "../state/map-ui-state";
 import type { BoundaryFeatureCollection, EventFeatureCollection, MapDataState } from "../types";
 import { HistoricalMap } from "./historical-map";
@@ -25,6 +28,8 @@ export function MapWorkspace() {
     data: EMPTY_COLLECTION,
   });
   const [boundaries, setBoundaries] = useState<BoundaryFeatureCollection>(EMPTY_BOUNDARIES);
+  const [detailRetryKey, setDetailRetryKey] = useState(0);
+  const [detailState, setDetailState] = useState<{ status: "loading" } | { status: "error" } | { status: "ready"; detail: EventDetail } | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,7 +63,17 @@ export function MapWorkspace() {
     [mapData.data.features, uiState.selectedEventId],
   );
 
+  useEffect(() => {
+    if (!selectedEvent) return;
+    const controller = new AbortController();
+    fetchEventDetail(selectedEvent.properties.slug, controller.signal)
+      .then((detail) => setDetailState({ status: "ready", detail }))
+      .catch(() => { if (!controller.signal.aborted) setDetailState({ status: "error" }); });
+    return () => controller.abort();
+  }, [detailRetryKey, selectedEvent]);
+
   const selectEvent = useCallback((eventId: string | null) => {
+    setDetailState(eventId ? { status: "loading" } : null);
     dispatch({ type: "select-event", eventId });
   }, [dispatch]);
 
@@ -100,34 +115,7 @@ export function MapWorkspace() {
         <MapNotice label="لا توجد أحداث جغرافية منشورة بعد." role="status" />
       )}
 
-      {selectedEvent && (
-        <article className="absolute bottom-4 start-4 z-10 max-w-sm rounded-2xl border border-[var(--gold-primary)]/60 bg-[color:var(--background-elevated)]/95 p-4 shadow-2xl backdrop-blur">
-          <div className="flex items-start justify-between gap-5">
-            <div>
-              <p className="mb-1 text-[10px] tracking-widest text-[var(--gold-primary)]" dir="ltr">
-                SELECTED EVENT
-              </p>
-              <h2 className="font-semibold text-[var(--text-primary)]">
-                {selectedEvent.properties.title_ar}
-              </h2>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">
-                {formatHijriRange(
-                  selectedEvent.properties.year_start_hijri,
-                  selectedEvent.properties.year_end_hijri,
-                )}
-              </p>
-            </div>
-            <button
-              aria-label="إلغاء تحديد الحدث"
-              className="text-lg text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-              onClick={() => selectEvent(null)}
-              type="button"
-            >
-              ×
-            </button>
-          </div>
-        </article>
-      )}
+      {selectedEvent && detailState && <EventDrawer onClose={() => { setDetailState(null); selectEvent(null); }} onRetry={() => { setDetailState({ status: "loading" }); setDetailRetryKey((key) => key + 1); }} state={detailState} />}
     </section>
   );
 }
@@ -150,8 +138,4 @@ function MapNotice({
       {children}
     </div>
   );
-}
-
-function formatHijriRange(start: number, end: number | null) {
-  return end && end !== start ? `${start}–${end} هـ` : `${start} هـ`;
 }

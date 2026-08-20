@@ -108,6 +108,8 @@ class HistoricalEvent(Base):
 
     start_date: Mapped[HistoricalDate] = relationship(foreign_keys=[start_date_id])
     end_date: Mapped[HistoricalDate | None] = relationship(foreign_keys=[end_date_id])
+    event_type: Mapped[EventType | None] = relationship(foreign_keys=[event_type_id])
+    primary_place: Mapped[Place | None] = relationship(foreign_keys=[primary_place_id])
     people: Mapped[list[Person]] = relationship(secondary="event_people", back_populates="events")
     places: Mapped[list[Place]] = relationship(secondary="event_places", back_populates="events")
     states: Mapped[list[State]] = relationship(secondary="event_states", back_populates="events")
