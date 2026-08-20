@@ -2,9 +2,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
+from sqlalchemy.dialects import postgresql
 
 from app.db.session import get_session
 from app.main import app
+from app.services.timeline import _active_events_statement
 
 
 class Result:
@@ -63,3 +65,13 @@ def test_timeline_rejects_invalid_year():
         assert TestClient(app).get("/api/v1/timeline/state?year_hijri=0").status_code == 422
     finally:
         app.dependency_overrides.clear()
+
+
+def test_year_only_event_is_not_treated_as_open_ended():
+    sql = str(
+        _active_events_statement(146).compile(
+            dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}
+        )
+    )
+    assert "historical_events.end_date_id IS NULL" in sql
+    assert "historical_dates_1.year = 146" in sql

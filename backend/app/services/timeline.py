@@ -68,7 +68,13 @@ def _active_events_statement(year_hijri: int):
             HistoricalEvent.publication_status == PublicationStatus.PUBLISHED.value,
             start.calendar == HistoricalCalendar.HIJRI.value,
             start.year <= year_hijri,
-            or_(HistoricalEvent.end_date_id.is_(None), and_(end.calendar == HistoricalCalendar.HIJRI.value, end.year >= year_hijri)),
+            or_(
+                and_(HistoricalEvent.end_date_id.is_(None), start.year == year_hijri),
+                and_(
+                    end.calendar == HistoricalCalendar.HIJRI.value,
+                    end.year >= year_hijri,
+                ),
+            ),
         )
         .order_by(start.year, HistoricalEvent.slug)
     )
