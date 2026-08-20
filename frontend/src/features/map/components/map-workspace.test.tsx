@@ -1,11 +1,11 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { fetchEventFeatures } from "../api/map-client";
+import { fetchTimelineState } from "@/features/timeline/api/timeline-client";
 import type { EventFeatureCollection } from "../types";
 import { MapWorkspace } from "./map-workspace";
 
-vi.mock("../api/map-client", () => ({ fetchEventFeatures: vi.fn() }));
+vi.mock("@/features/timeline/api/timeline-client", () => ({ fetchTimelineState: vi.fn() }));
 vi.mock("./historical-map", () => ({
   HistoricalMap: ({
     eventsVisible,
@@ -52,14 +52,21 @@ describe("MapWorkspace", () => {
   afterEach(cleanup);
 
   beforeEach(() => {
-    vi.mocked(fetchEventFeatures).mockResolvedValue(COLLECTION);
+    vi.clearAllMocks();
+    vi.mocked(fetchTimelineState).mockResolvedValue({
+      year_hijri: 132,
+      metadata: { calendar: "hijri", granularity: "year" },
+      events: [],
+      event_features: COLLECTION,
+      boundaries: { type: "FeatureCollection", features: [] },
+    });
   });
 
   it("loads the map shell and GeoJSON data", async () => {
     render(<MapWorkspace />);
 
     expect(screen.getByTestId("historical-map")).toBeInTheDocument();
-    await waitFor(() => expect(fetchEventFeatures).toHaveBeenCalledOnce());
+    await waitFor(() => expect(fetchTimelineState).toHaveBeenCalledOnce());
   });
 
   it("toggles event-layer rendering state", async () => {
@@ -79,5 +86,19 @@ describe("MapWorkspace", () => {
 
     expect(screen.getByText("event-1")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "حدث اختباري" })).toBeInTheDocument();
+  });
+
+  it("keeps layer visibility and clears a selection after the new year excludes it", async () => {
+    vi.mocked(fetchTimelineState)
+      .mockResolvedValueOnce({ year_hijri: 132, metadata: { calendar: "hijri", granularity: "year" }, events: [], event_features: COLLECTION, boundaries: { type: "FeatureCollection", features: [] } })
+      .mockResolvedValueOnce({ year_hijri: 133, metadata: { calendar: "hijri", granularity: "year" }, events: [], event_features: { type: "FeatureCollection", features: [] }, boundaries: { type: "FeatureCollection", features: [] } });
+    render(<MapWorkspace />);
+    await screen.findByText("events-visible");
+    fireEvent.click(screen.getByRole("button", { name: "test marker" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "إظهار الأحداث" }));
+    fireEvent.click(screen.getByRole("button", { name: "السنة التالية" }));
+    await waitFor(() => expect(fetchTimelineState).toHaveBeenCalledTimes(2));
+    expect(screen.getByText("events-hidden")).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText("nothing-selected")).toBeInTheDocument());
   });
 });

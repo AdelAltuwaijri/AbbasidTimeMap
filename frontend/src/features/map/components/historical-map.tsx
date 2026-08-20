@@ -11,13 +11,17 @@ import {
 import {
   EVENT_LAYER_ID,
   EVENT_SOURCE_ID,
+  BOUNDARY_LAYER_ID,
+  BOUNDARY_OUTLINE_LAYER_ID,
+  BOUNDARY_SOURCE_ID,
   MAP_INITIAL_VIEW,
   SELECTED_EVENT_LAYER_ID,
   createMapStyle,
 } from "../config/map-config";
-import type { EventFeatureCollection } from "../types";
+import type { BoundaryFeatureCollection, EventFeatureCollection } from "../types";
 
 interface HistoricalMapProps {
+  boundaries: BoundaryFeatureCollection;
   events: EventFeatureCollection;
   eventsVisible: boolean;
   selectedEventId: string | null;
@@ -25,6 +29,7 @@ interface HistoricalMapProps {
 }
 
 export function HistoricalMap({
+  boundaries,
   events,
   eventsVisible,
   selectedEventId,
@@ -33,6 +38,7 @@ export function HistoricalMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const eventsRef = useRef(events);
+  const boundariesRef = useRef(boundaries);
   const visibilityRef = useRef(eventsVisible);
   const selectedIdRef = useRef(selectedEventId);
   const selectHandlerRef = useRef(onSelectEvent);
@@ -40,6 +46,7 @@ export function HistoricalMap({
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
+  useEffect(() => { boundariesRef.current = boundaries; }, [boundaries]);
 
   useEffect(() => {
     visibilityRef.current = eventsVisible;
@@ -71,6 +78,9 @@ export function HistoricalMap({
 
     map.on("load", () => {
       map.addSource(EVENT_SOURCE_ID, { type: "geojson", data: eventsRef.current });
+      map.addSource(BOUNDARY_SOURCE_ID, { type: "geojson", data: boundariesRef.current });
+      map.addLayer({ id: BOUNDARY_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "fill", paint: { "fill-color": "#c99745", "fill-opacity": 0.12 } });
+      map.addLayer({ id: BOUNDARY_OUTLINE_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "line", paint: { "line-color": "#c99745", "line-width": 1.5 } });
       map.addLayer({
         id: EVENT_LAYER_ID,
         source: EVENT_SOURCE_ID,
@@ -118,6 +128,11 @@ export function HistoricalMap({
     const source = mapRef.current?.getSource(EVENT_SOURCE_ID) as GeoJSONSource | undefined;
     source?.setData(events);
   }, [events]);
+
+  useEffect(() => {
+    const source = mapRef.current?.getSource(BOUNDARY_SOURCE_ID) as GeoJSONSource | undefined;
+    source?.setData(boundaries);
+  }, [boundaries]);
 
   useEffect(() => {
     const map = mapRef.current;

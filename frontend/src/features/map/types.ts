@@ -27,6 +27,8 @@ export interface EventFeatureCollection {
   features: EventFeature[];
 }
 
+export type BoundaryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon>;
+
 export type MapDataState =
   | { status: "loading"; data: EventFeatureCollection }
   | { status: "ready"; data: EventFeatureCollection }

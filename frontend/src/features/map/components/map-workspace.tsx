@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { fetchEventFeatures } from "../api/map-client";
+import { fetchTimelineState } from "@/features/timeline/api/timeline-client";
+import { TimelineBar } from "@/features/timeline/components/timeline-bar";
+import { useTimelineState } from "@/features/timeline/state/timeline-state";
 import { useMapUiState } from "../state/map-ui-state";
-import type { EventFeatureCollection, MapDataState } from "../types";
+import type { BoundaryFeatureCollection, EventFeatureCollection, MapDataState } from "../types";
 import { HistoricalMap } from "./historical-map";
 import { LayerPanel } from "./layer-panel";
 
@@ -12,31 +14,41 @@ const EMPTY_COLLECTION: EventFeatureCollection = {
   type: "FeatureCollection",
   features: [],
 };
+const EMPTY_BOUNDARIES: BoundaryFeatureCollection = { type: "FeatureCollection", features: [] };
 
 export function MapWorkspace() {
   const [uiState, dispatch] = useMapUiState();
-  const [requestKey, setRequestKey] = useState(0);
+  const [timelineState, timelineDispatch] = useTimelineState();
+  const [retryKey, setRetryKey] = useState(0);
   const [mapData, setMapData] = useState<MapDataState>({
     status: "loading",
     data: EMPTY_COLLECTION,
   });
+  const [boundaries, setBoundaries] = useState<BoundaryFeatureCollection>(EMPTY_BOUNDARIES);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchEventFeatures(controller.signal)
-      .then((data) => setMapData({ status: "ready", data }))
+    fetchTimelineState(timelineState.selectedYear, controller.signal)
+      .then((data) => { setBoundaries(data.boundaries); setMapData({ status: "ready", data: data.event_features }); })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
-        setMapData({
+        setMapData((currentMapData) => ({
           status: "error",
-          data: EMPTY_COLLECTION,
+          data: currentMapData.data,
           message: error instanceof Error ? error.message : "Unknown map error",
-        });
+        }));
       });
 
     return () => controller.abort();
-  }, [requestKey]);
+  // The selected Hijri year is the sole time input. Abort stale requests as it changes.
+  }, [retryKey, timelineState.selectedYear]);
+
+  useEffect(() => {
+    if (uiState.selectedEventId && !mapData.data.features.some((feature) => feature.properties.id === uiState.selectedEventId)) {
+      dispatch({ type: "select-event", eventId: null });
+    }
+  }, [dispatch, mapData.data.features, uiState.selectedEventId]);
 
   const selectedEvent = useMemo(
     () =>
@@ -53,6 +65,7 @@ export function MapWorkspace() {
   return (
     <section className="relative isolate min-h-[34rem] flex-1 overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[#121713] shadow-2xl">
       <HistoricalMap
+        boundaries={boundaries}
         events={mapData.data}
         eventsVisible={uiState.layers.events}
         onSelectEvent={selectEvent}
@@ -64,6 +77,8 @@ export function MapWorkspace() {
         onToggleEvents={() => dispatch({ type: "toggle-events" })}
       />
 
+      <TimelineBar dispatch={timelineDispatch} state={timelineState} />
+
       {mapData.status === "loading" && (
         <MapNotice label="جارٍ تحميل بيانات الخريطة…" role="status" />
       )}
@@ -72,8 +87,8 @@ export function MapWorkspace() {
           <button
             className="mt-3 rounded-lg border border-[var(--gold-primary)] px-3 py-1.5 text-xs text-[var(--gold-primary)]"
             onClick={() => {
-              setMapData({ status: "loading", data: EMPTY_COLLECTION });
-              setRequestKey((key) => key + 1);
+              setMapData((currentMapData) => ({ status: "loading", data: currentMapData.data }));
+              setRetryKey((key) => key + 1);
             }}
             type="button"
           >

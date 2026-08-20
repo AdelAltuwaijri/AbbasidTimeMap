@@ -10,6 +10,9 @@ export const MAP_INITIAL_VIEW = {
 export const EVENT_SOURCE_ID = "historical-events";
 export const EVENT_LAYER_ID = "historical-event-markers";
 export const SELECTED_EVENT_LAYER_ID = "selected-historical-event";
+export const BOUNDARY_SOURCE_ID = "historical-boundaries";
+export const BOUNDARY_LAYER_ID = "historical-boundaries-fill";
+export const BOUNDARY_OUTLINE_LAYER_ID = "historical-boundaries-outline";
 
 // OpenFreeMap's current dark vector style is a replaceable geographic reference
 // basemap. It is not an assertion of historical Abbasid political boundaries.

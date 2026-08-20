@@ -15,12 +15,16 @@ Example response shape:
 {
   "year_hijri": 145,
   "year_gregorian_display": "762–763",
+  "metadata": {"calendar": "hijri", "granularity": "year"},
   "events": [],
-  "boundaries": [],
-  "places": [],
-  "people_highlights": []
+  "event_features": {"type": "FeatureCollection", "features": []},
+  "boundaries": {"type": "FeatureCollection", "features": []}
 }
 ```
+
+`year_hijri` is a required positive integer. Events are published Hijri records whose
+annual range intersects the selected year. Boundaries are returned only when their
+Hijri validity range contains the year; no modern fallback geometry is supplied.
 
 ### GET /timeline/events?from_hijri=132&to_hijri=170
 Returns event summaries suitable for timeline ticks/clusters.
