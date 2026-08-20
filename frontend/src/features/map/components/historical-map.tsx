@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  type ErrorEvent as MapLibreErrorEvent,
   GeoJSONSource,
   Map,
   NavigationControl,
@@ -9,6 +10,7 @@ import {
 } from "maplibre-gl";
 
 import {
+  BASEMAP_SOURCE_ID,
   EVENT_LAYER_ID,
   EVENT_SOURCE_ID,
   BOUNDARY_LAYER_ID,
@@ -42,6 +44,7 @@ export function HistoricalMap({
   const visibilityRef = useRef(eventsVisible);
   const selectedIdRef = useRef(selectedEventId);
   const selectHandlerRef = useRef(onSelectEvent);
+  const [basemapLoadFailed, setBasemapLoadFailed] = useState(false);
 
   useEffect(() => {
     eventsRef.current = events;
@@ -71,7 +74,6 @@ export function HistoricalMap({
 
     const map = new Map({
       container: containerRef.current,
-      style: createMapStyle(),
       ...MAP_INITIAL_VIEW,
     });
     mapRef.current = map;
@@ -82,49 +84,74 @@ export function HistoricalMap({
       if (typeof featureId === "string") selectHandlerRef.current(featureId);
     };
 
-    map.on("load", () => {
-      map.addSource(EVENT_SOURCE_ID, { type: "geojson", data: eventsRef.current });
-      map.addSource(BOUNDARY_SOURCE_ID, { type: "geojson", data: boundariesRef.current });
-      map.addLayer({ id: BOUNDARY_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "fill", paint: { "fill-color": "#c99745", "fill-opacity": 0.12 } });
-      map.addLayer({ id: BOUNDARY_OUTLINE_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "line", paint: { "line-color": "#c99745", "line-width": 1.5 } });
-      map.addLayer({
-        id: EVENT_LAYER_ID,
-        source: EVENT_SOURCE_ID,
-        type: "circle",
-        layout: { visibility: visibilityRef.current ? "visible" : "none" },
-        paint: {
-          "circle-color": "#c99745",
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 5, 8, 9],
-          "circle-stroke-color": "#17130e",
-          "circle-stroke-width": 2,
-        },
-        filter: ["!=", ["get", "id"], selectedIdRef.current ?? ""],
-      });
-      map.addLayer({
-        id: SELECTED_EVENT_LAYER_ID,
-        source: EVENT_SOURCE_ID,
-        type: "circle",
-        layout: { visibility: visibilityRef.current ? "visible" : "none" },
-        paint: {
-          "circle-color": "#f8e3a7",
-          "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 9, 8, 14],
-          "circle-stroke-color": "#c99745",
-          "circle-stroke-width": 4,
-          "circle-blur": 0.12,
-        },
-        filter: ["==", ["get", "id"], selectedIdRef.current ?? ""],
-      });
-      map.on("click", EVENT_LAYER_ID, handleMarkerClick);
-      map.on("click", SELECTED_EVENT_LAYER_ID, handleMarkerClick);
-      map.on("mouseenter", EVENT_LAYER_ID, () => {
-        map.getCanvas().style.cursor = "pointer";
-      });
-      map.on("mouseleave", EVENT_LAYER_ID, () => {
-        map.getCanvas().style.cursor = "";
-      });
+    const handleMapError = (event: MapLibreErrorEvent & { sourceId?: string }) => {
+      if (!event.sourceId || event.sourceId === BASEMAP_SOURCE_ID) {
+        setBasemapLoadFailed(true);
+      }
+    };
+
+    map.on("error", handleMapError);
+
+    const ensureHistoricalLayers = () => {
+      if (!map.getSource(EVENT_SOURCE_ID)) {
+        map.addSource(EVENT_SOURCE_ID, { type: "geojson", data: eventsRef.current });
+      }
+      if (!map.getSource(BOUNDARY_SOURCE_ID)) {
+        map.addSource(BOUNDARY_SOURCE_ID, { type: "geojson", data: boundariesRef.current });
+      }
+      if (!map.getLayer(BOUNDARY_LAYER_ID)) {
+        map.addLayer({ id: BOUNDARY_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "fill", paint: { "fill-color": "#c99745", "fill-opacity": 0.12 } });
+      }
+      if (!map.getLayer(BOUNDARY_OUTLINE_LAYER_ID)) {
+        map.addLayer({ id: BOUNDARY_OUTLINE_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "line", paint: { "line-color": "#c99745", "line-width": 1.5 } });
+      }
+      if (!map.getLayer(EVENT_LAYER_ID)) {
+        map.addLayer({
+          id: EVENT_LAYER_ID,
+          source: EVENT_SOURCE_ID,
+          type: "circle",
+          layout: { visibility: visibilityRef.current ? "visible" : "none" },
+          paint: {
+            "circle-color": "#c99745",
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 5, 8, 9],
+            "circle-stroke-color": "#17130e",
+            "circle-stroke-width": 2,
+          },
+          filter: ["!=", ["get", "id"], selectedIdRef.current ?? ""],
+        });
+      }
+      if (!map.getLayer(SELECTED_EVENT_LAYER_ID)) {
+        map.addLayer({
+          id: SELECTED_EVENT_LAYER_ID,
+          source: EVENT_SOURCE_ID,
+          type: "circle",
+          layout: { visibility: visibilityRef.current ? "visible" : "none" },
+          paint: {
+            "circle-color": "#f8e3a7",
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 9, 8, 14],
+            "circle-stroke-color": "#c99745",
+            "circle-stroke-width": 4,
+            "circle-blur": 0.12,
+          },
+          filter: ["==", ["get", "id"], selectedIdRef.current ?? ""],
+        });
+      }
+    };
+
+    map.on("load", ensureHistoricalLayers);
+    map.on("style.load", ensureHistoricalLayers);
+    map.on("click", EVENT_LAYER_ID, handleMarkerClick);
+    map.on("click", SELECTED_EVENT_LAYER_ID, handleMarkerClick);
+    map.on("mouseenter", EVENT_LAYER_ID, () => {
+      map.getCanvas().style.cursor = "pointer";
     });
+    map.on("mouseleave", EVENT_LAYER_ID, () => {
+      map.getCanvas().style.cursor = "";
+    });
+    map.setStyle(createMapStyle());
 
     return () => {
+      map.off("error", handleMapError);
       mapRef.current = null;
       map.remove();
     };
@@ -166,6 +193,14 @@ export function HistoricalMap({
         className="h-full w-full"
         dir="ltr"
       />
+      {basemapLoadFailed && (
+        <div
+          className="absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-xl border border-amber-500/60 bg-[#17130e]/95 px-4 py-2 text-sm text-amber-100 shadow-xl"
+          role="alert"
+        >
+          تعذر تحميل الخريطة الأساسية
+        </div>
+      )}
     </div>
   );
 }
