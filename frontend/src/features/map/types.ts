@@ -1,5 +1,9 @@
 export type Position = [longitude: number, latitude: number];
 
+export type MapFocusRequest =
+  | { requestId: number; kind: "point"; coordinates: Position }
+  | { requestId: number; kind: "bounds"; bounds: [southWest: Position, northEast: Position] };
+
 export interface EventFeatureProperties {
   id: string;
   slug: string;

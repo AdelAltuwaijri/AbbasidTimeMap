@@ -64,5 +64,18 @@
 
 **DEC-014 relationship:** The base map remains physical reference only. Political geometry, historical places, and labels are temporal Abbasid TimeMap layers; no modern boundary or label source participates in the reconstruction.
 
+## DEC-017 — Public historical search projections
+**Decision:** M-03 searches Event, Person, Place, and State names/titles through bounded query-time PostgreSQL projections. It adds no search table, stored normalized column, extension, external index, semantic search, or numeric year result type.
+
+**Normalization:** Matching applies Unicode NFKC and lowercasing, removes invisible format controls, Arabic diacritics, and tatweel, maps `أ/إ/آ/ٱ` to `ا` and `ى` to `ي`, and trims/collapses whitespace. It does not conflate `ة` with `ه` or rewrite `ؤ/ئ`. Curated stored text remains unchanged and is always used for display.
+
+**Public eligibility:** Events must be published. A Person requires a published `EventPerson`; a Place requires a published `EventPlace` or primary-place relationship; a State requires a published `EventState` or published PoliticalBoundary. Search covers primary names/titles and Person aliases, not summaries, biographies, or `modern_reference` prose.
+
+**Ranking:** Order literal primary-label exact, normalized primary-label exact, primary-label prefix, Person alias exact/prefix, primary-label partial, Person alias partial, then stable-slug match. Break ties by match position, shorter normalized primary label, entity type, relevant Hijri year, and slug.
+
+**Navigation:** Event results use their own published date and supported point. Person context prefers a related published Event whose slug contains the Person slug, then importance, supported point, earlier year, and slug. Place context uses the highest-importance then earliest related published Event, but focus uses only the Place's own stored point or area. State prefers its earliest published Boundary by year/slug, falling back to the highest-importance then earliest related published Event; Boundary focus uses bounds, never a synthetic centroid. Selection changes DEC-012's shared Hijri year, waits for that Timeline response, then focuses/selects without rebuilding MapLibre or changing layer visibility. Only Event and Person results may open the declared existing Event drawer; no Person, Place, or State profile is invented.
+
+**Deferred scope:** Search state remains session-local. Shareable URL parameters are deferred, and numbers are not exposed as a fifth `year` result type in M-03.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.

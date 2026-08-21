@@ -20,13 +20,18 @@ import {
   SELECTED_EVENT_LAYER_ID,
   createMapStyle,
 } from "../config/map-config";
-import type { BoundaryFeatureCollection, EventFeatureCollection } from "../types";
+import type {
+  BoundaryFeatureCollection,
+  EventFeatureCollection,
+  MapFocusRequest,
+} from "../types";
 
 interface HistoricalMapProps {
   boundaries: BoundaryFeatureCollection;
   boundariesVisible: boolean;
   events: EventFeatureCollection;
   eventsVisible: boolean;
+  focusRequest: MapFocusRequest | null;
   selectedEventId: string | null;
   onSelectEvent: (eventId: string | null) => void;
 }
@@ -36,6 +41,7 @@ export function HistoricalMap({
   boundariesVisible,
   events,
   eventsVisible,
+  focusRequest,
   selectedEventId,
   onSelectEvent,
 }: HistoricalMapProps) {
@@ -45,6 +51,9 @@ export function HistoricalMap({
   const boundariesRef = useRef(boundaries);
   const boundariesVisibilityRef = useRef(boundariesVisible);
   const eventsVisibilityRef = useRef(eventsVisible);
+  const focusRequestRef = useRef(focusRequest);
+  const appliedFocusRequestIdRef = useRef<number | null>(null);
+  const mapLoadedRef = useRef(false);
   const selectedIdRef = useRef(selectedEventId);
   const selectHandlerRef = useRef(onSelectEvent);
   const [basemapLoadFailed, setBasemapLoadFailed] = useState(false);
@@ -65,14 +74,15 @@ export function HistoricalMap({
   }, [eventsVisible]);
 
   useEffect(() => {
-    selectedIdRef.current = selectedEventId;
-  }, [selectedEventId]);
+    focusRequestRef.current = focusRequest;
+    if (mapLoadedRef.current && mapRef.current) {
+      applyFocusRequest(mapRef.current, focusRequest, appliedFocusRequestIdRef);
+    }
+  }, [focusRequest]);
 
   useEffect(() => {
-    if (!selectedEventId) return;
-    const selected = events.features.find((feature) => feature.properties.id === selectedEventId);
-    if (selected) mapRef.current?.flyTo({ center: selected.geometry.coordinates, zoom: Math.max(mapRef.current.getZoom(), 6), essential: true });
-  }, [events.features, selectedEventId]);
+    selectedIdRef.current = selectedEventId;
+  }, [selectedEventId]);
 
   useEffect(() => {
     selectHandlerRef.current = onSelectEvent;
@@ -164,7 +174,13 @@ export function HistoricalMap({
       }
     };
 
-    map.on("load", ensureHistoricalLayers);
+    const handleMapLoad = () => {
+      mapLoadedRef.current = true;
+      ensureHistoricalLayers();
+      applyFocusRequest(map, focusRequestRef.current, appliedFocusRequestIdRef);
+    };
+
+    map.on("load", handleMapLoad);
     map.on("style.load", ensureHistoricalLayers);
     map.on("click", EVENT_LAYER_ID, handleMarkerClick);
     map.on("click", SELECTED_EVENT_LAYER_ID, handleMarkerClick);
@@ -178,6 +194,7 @@ export function HistoricalMap({
 
     return () => {
       map.off("error", handleMapError);
+      mapLoadedRef.current = false;
       mapRef.current = null;
       map.remove();
     };
@@ -241,4 +258,27 @@ export function HistoricalMap({
       )}
     </div>
   );
+}
+
+function applyFocusRequest(
+  map: Map,
+  request: MapFocusRequest | null,
+  appliedRequestId: { current: number | null },
+) {
+  if (!request || appliedRequestId.current === request.requestId) return;
+
+  if (request.kind === "point") {
+    map.flyTo({
+      center: request.coordinates,
+      zoom: Math.max(map.getZoom(), 6),
+      essential: true,
+    });
+  } else {
+    map.fitBounds(request.bounds, {
+      padding: 64,
+      maxZoom: 6,
+      essential: true,
+    });
+  }
+  appliedRequestId.current = request.requestId;
 }

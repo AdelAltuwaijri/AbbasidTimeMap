@@ -55,19 +55,60 @@ Returns active political entities.
 Returns the time-valid boundary geometry.
 
 ## Search
-### GET /search?q=بغداد
-Returns categorized results.
+### GET /search?q=بغداد&limit=10
+Returns one globally ranked compact list across Events, People, Places, and States.
 
-Each result should include navigation hints:
+| Parameter | Required | Validation |
+|---|---|---|
+| `q` | yes | 2–100 visible characters after trimming and search normalization |
+| `limit` | no | integer 1–20; default 10 |
+
+Example response:
+
 ```json
 {
-  "entity_type": "event",
-  "slug": "founding-of-baghdad",
-  "label": "تأسيس بغداد",
-  "focus_year_hijri": 145,
-  "map_focus": {"lat": 33.3152, "lng": 44.3661}
+  "query": "بغداد",
+  "results": [
+    {
+      "entity_type": "place",
+      "id": "00000000-0000-0000-0000-000000000000",
+      "slug": "baghdad",
+      "title_ar": "بغداد",
+      "title_en": "Baghdad",
+      "subtitle_ar": "مكان — تأسيس بغداد، 145هـ",
+      "relevant_hijri_year": 145,
+      "relevant_end_year": null,
+      "coordinates": {"longitude": 44.3661, "latitude": 33.3152},
+      "bounds": null,
+      "confidence": null,
+      "navigation_event_id": "00000000-0000-0000-0000-000000000001",
+      "navigation_event_slug": "founding-of-baghdad"
+    }
+  ]
 }
 ```
+
+Result rules:
+
+- `entity_type` is exactly `event`, `person`, `place`, or `state`.
+- Identity, slugs, and Arabic/English titles are original stored values; normalized text is never returned for display.
+- `relevant_hijri_year` is always present. The optional end year comes from the selected stored Event or Boundary context.
+- `coordinates` are named WGS84 longitude/latitude values. `bounds` use `{west, south, east, north}` with ordered edges. At most one is non-null; both may be null, and no missing geometry is synthesized.
+- `navigation_event_id` and `navigation_event_slug` are both present or both null. Event results identify themselves; Person results identify their declared published Event context. Place and State results do not open an Event drawer merely because an Event supplies context.
+- A State using Boundary context returns bounds and Boundary confidence, with no navigation Event or centroid.
+- Results never exceed `limit` and omit full event detail, biographies, source lists, and Boundary geometry.
+
+Public eligibility rules:
+
+- Event results and every Event-derived navigation context are published only.
+- A Person requires an `EventPerson` relationship to at least one published Event.
+- A Place requires an `EventPlace` relationship to a published Event or a published Event primary-place relationship.
+- A State requires an `EventState` relationship to a published Event or a published PoliticalBoundary.
+- Search matches primary names/titles and Person aliases; summaries, biographies, and `modern_reference` are excluded.
+
+Ranking order is literal primary-label exact, normalized primary-label exact, primary-label prefix, Person alias exact/prefix, primary-label partial, Person alias partial, then stable-slug match. Ties use match position, shorter normalized label, entity type, relevant year, and slug.
+
+A valid no-match query returns `200` with `{"query":"…","results":[]}`. Missing, empty, too-short, too-long, normalized-empty queries and limits outside 1–20 return FastAPI `422`. Input is always passed as a bound value and never interpolated into SQL text. An unexpected service failure returns a non-success response; the client preserves the current Timeline, map, layers, and selection.
 
 ## Sources
 ### GET /events/{slug}/sources

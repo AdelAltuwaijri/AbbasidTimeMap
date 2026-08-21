@@ -7,6 +7,7 @@ from app.api.v1.events import router as events_router
 from app.api.v1.health import health_check
 from app.api.v1.health import router as health_router
 from app.api.v1.map import router as map_router
+from app.api.v1.search import router as search_router
 from app.api.v1.timeline import router as timeline_router
 from app.core.config import cors_origins
 
@@ -21,5 +22,6 @@ app.add_middleware(
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(events_router, prefix="/api/v1")
 app.include_router(map_router, prefix="/api/v1")
+app.include_router(search_router, prefix="/api/v1")
 app.include_router(timeline_router, prefix="/api/v1")
 app.add_api_route("/health", health_check, methods=["GET"], tags=["health"])

@@ -9,7 +9,11 @@ import {
   EVENT_LAYER_ID,
   SELECTED_EVENT_LAYER_ID,
 } from "../config/map-config";
-import type { BoundaryFeatureCollection, EventFeatureCollection } from "../types";
+import type {
+  BoundaryFeatureCollection,
+  EventFeatureCollection,
+  MapFocusRequest,
+} from "../types";
 import { HistoricalMap } from "./historical-map";
 
 const mocks = vi.hoisted(() => {
@@ -18,6 +22,7 @@ const mocks = vi.hoisted(() => {
     addControl: vi.fn(),
     addLayer: vi.fn(),
     addSource: vi.fn(),
+    fitBounds: vi.fn(),
     flyTo: vi.fn(),
     getCanvas: vi.fn(() => ({ style: {} })),
     getLayer: vi.fn(),
@@ -44,6 +49,25 @@ vi.mock("maplibre-gl", () => ({
 }));
 
 const EMPTY_EVENTS: EventFeatureCollection = { type: "FeatureCollection", features: [] };
+const BAGHDAD_EVENT: EventFeatureCollection = {
+  type: "FeatureCollection",
+  features: [{
+    type: "Feature",
+    id: "event-1",
+    geometry: { type: "Point", coordinates: [44.36, 33.31] },
+    properties: {
+      id: "event-1",
+      slug: "founding-of-baghdad",
+      title_ar: "تأسيس بغداد",
+      entity_type: "event",
+      event_type: "political",
+      year_start_hijri: 145,
+      year_end_hijri: null,
+      importance: 3,
+      confidence: "high",
+    },
+  }],
+};
 const EMPTY_BOUNDARIES: BoundaryFeatureCollection = { type: "FeatureCollection", features: [] };
 const BOUNDARY_A: BoundaryFeatureCollection = {
   type: "FeatureCollection",
@@ -90,9 +114,11 @@ const BOUNDARY_B: BoundaryFeatureCollection = {
 function renderHistoricalMap({
   boundaries = EMPTY_BOUNDARIES,
   boundariesVisible = true,
+  focusRequest = null,
 }: {
   boundaries?: BoundaryFeatureCollection;
   boundariesVisible?: boolean;
+  focusRequest?: MapFocusRequest | null;
 } = {}) {
   return render(
     <HistoricalMap
@@ -100,6 +126,7 @@ function renderHistoricalMap({
       boundariesVisible={boundariesVisible}
       events={EMPTY_EVENTS}
       eventsVisible
+      focusRequest={focusRequest}
       onSelectEvent={vi.fn()}
       selectedEventId={null}
     />,
@@ -180,6 +207,7 @@ describe("HistoricalMap", () => {
         boundariesVisible
         events={EMPTY_EVENTS}
         eventsVisible
+        focusRequest={null}
         onSelectEvent={vi.fn()}
         selectedEventId={null}
       />,
@@ -203,6 +231,7 @@ describe("HistoricalMap", () => {
         boundariesVisible={false}
         events={EMPTY_EVENTS}
         eventsVisible
+        focusRequest={null}
         onSelectEvent={vi.fn()}
         selectedEventId={null}
       />,
@@ -217,5 +246,136 @@ describe("HistoricalMap", () => {
       "visibility",
       "none",
     );
+  });
+
+  it("queues a point focus until load without rebuilding the map or changing layers", () => {
+    renderHistoricalMap({
+      focusRequest: {
+        requestId: 1,
+        kind: "point",
+        coordinates: [44.3661, 33.3152],
+      },
+    });
+
+    expect(mapMock.flyTo).not.toHaveBeenCalled();
+
+    act(() => {
+      registeredHandler("load")?.();
+    });
+
+    expect(mapMock.flyTo).toHaveBeenCalledOnce();
+    expect(mapMock.flyTo).toHaveBeenCalledWith({
+      center: [44.3661, 33.3152],
+      zoom: 6,
+      essential: true,
+    });
+    expect(mapMock.fitBounds).not.toHaveBeenCalled();
+    expect(mapMock.setLayoutProperty).not.toHaveBeenCalled();
+    expect(mapConstructor).toHaveBeenCalledOnce();
+  });
+
+  it("frames historical bounds after load", () => {
+    renderHistoricalMap({
+      focusRequest: {
+        requestId: 2,
+        kind: "bounds",
+        bounds: [[20, 10], [60, 40]],
+      },
+    });
+
+    act(() => {
+      registeredHandler("load")?.();
+    });
+
+    expect(mapMock.fitBounds).toHaveBeenCalledWith(
+      [[20, 10], [60, 40]],
+      { padding: 64, maxZoom: 6, essential: true },
+    );
+    expect(mapMock.flyTo).not.toHaveBeenCalled();
+  });
+
+  it("applies each focus request id once, including repeated geometry", () => {
+    const { rerender } = renderHistoricalMap();
+    act(() => {
+      registeredHandler("load")?.();
+    });
+
+    const focusRequest: MapFocusRequest = {
+      requestId: 7,
+      kind: "point",
+      coordinates: [44.36, 33.31],
+    };
+    rerender(
+      <HistoricalMap
+        boundaries={EMPTY_BOUNDARIES}
+        boundariesVisible
+        events={EMPTY_EVENTS}
+        eventsVisible
+        focusRequest={focusRequest}
+        onSelectEvent={vi.fn()}
+        selectedEventId={null}
+      />,
+    );
+    rerender(
+      <HistoricalMap
+        boundaries={EMPTY_BOUNDARIES}
+        boundariesVisible
+        events={EMPTY_EVENTS}
+        eventsVisible
+        focusRequest={{ ...focusRequest }}
+        onSelectEvent={vi.fn()}
+        selectedEventId={null}
+      />,
+    );
+    rerender(
+      <HistoricalMap
+        boundaries={EMPTY_BOUNDARIES}
+        boundariesVisible
+        events={EMPTY_EVENTS}
+        eventsVisible
+        focusRequest={{ ...focusRequest, requestId: 8 }}
+        onSelectEvent={vi.fn()}
+        selectedEventId={null}
+      />,
+    );
+
+    expect(mapMock.flyTo).toHaveBeenCalledTimes(2);
+    expect(mapConstructor).toHaveBeenCalledOnce();
+  });
+
+  it("uses the explicit focus request once when marker selection changes with it", () => {
+    const { rerender } = renderHistoricalMap();
+    act(() => {
+      registeredHandler("load")?.();
+    });
+
+    rerender(
+      <HistoricalMap
+        boundaries={EMPTY_BOUNDARIES}
+        boundariesVisible
+        events={BAGHDAD_EVENT}
+        eventsVisible
+        focusRequest={{
+          requestId: 10,
+          kind: "point",
+          coordinates: [44.36, 33.31],
+        }}
+        onSelectEvent={vi.fn()}
+        selectedEventId="event-1"
+      />,
+    );
+
+    expect(mapMock.flyTo).toHaveBeenCalledOnce();
+  });
+
+  it("preserves the current camera when no focus was requested", () => {
+    renderHistoricalMap();
+
+    act(() => {
+      registeredHandler("load")?.();
+    });
+
+    expect(mapMock.flyTo).not.toHaveBeenCalled();
+    expect(mapMock.fitBounds).not.toHaveBeenCalled();
   });
 });
