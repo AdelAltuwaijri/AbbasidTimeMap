@@ -51,19 +51,27 @@ Exact values should be centralized in design tokens.
 ## Event marker semantics
 Marker shape/icon identifies category; color must not be the only differentiator.
 
-## Event drawer tabs
-Recommended:
-- Summary
-- Details
-- Impact
-- Sources
+## Event experience sections
 
-AI-specific actions remain visually separate from verified source content.
+M-04 uses one conditional reading flow rather than tabs. Empty historical sections
+are omitted, so a tab never leads to an invented placeholder or empty panel. The
+order is: header/date metadata, what happened, causes, consequences, places,
+related people/states, sources, then confidence. Source cards are visually distinct
+from historical narrative and expose bibliographic/citation/support fields without
+showing invalid links. Confidence and disputed status use text and semantics, not
+color alone.
+
+Relationship machine codes are retained in the API but are not rendered as Arabic
+labels without an approved localization. AI-specific actions remain visually and
+semantically separate from verified source content when a later package enables
+them.
 
 ## Responsive strategy
 Desktop: map + side panels.
 Tablet: collapsible side panels.
-Mobile: full-screen map with bottom sheet for events and timeline optimized for touch.
+Mobile: full-screen map with a height-bounded, internally scrollable bottom sheet
+for events and timeline optimized for touch. The sheet header and close control
+remain available while long content scrolls.
 
 ## Motion
 Use subtle motion for:

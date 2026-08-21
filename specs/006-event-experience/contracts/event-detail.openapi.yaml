@@ -1,0 +1,135 @@
+openapi: 3.1.0
+info:
+  title: Abbasid TimeMap M-04 Event Detail Contract
+  version: 1.0.0
+paths:
+  /api/v1/events/{slug}:
+    get:
+      summary: Get a public, source-proven historical event
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Published, source-proven event detail
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EventDetail' }
+        '404':
+          description: Unknown, non-public, unsourced, or confidence-unclassified event
+components:
+  schemas:
+    HistoricalDateDetail:
+      type: object
+      required: [calendar, year, precision, circa]
+      properties:
+        calendar: { type: string, enum: [hijri, gregorian, mixed_reference] }
+        year: { type: integer }
+        month: { type: [integer, 'null'] }
+        day: { type: [integer, 'null'] }
+        precision: { type: string, enum: [exact, month, year, approximate, disputed] }
+        circa: { type: boolean }
+        display_label_ar: { type: [string, 'null'] }
+        display_label_en: { type: [string, 'null'] }
+    NamedEntity:
+      type: object
+      required: [id, slug, name_ar]
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name_ar: { type: string }
+        name_en: { type: [string, 'null'] }
+    RelatedPerson:
+      allOf:
+        - { $ref: '#/components/schemas/NamedEntity' }
+        - type: object
+          required: [role_code]
+          properties:
+            role_code: { type: string }
+    RelatedPlace:
+      allOf:
+        - { $ref: '#/components/schemas/NamedEntity' }
+        - type: object
+          required: [relation_type]
+          properties:
+            relation_type: { type: string }
+    RelatedState:
+      allOf:
+        - { $ref: '#/components/schemas/NamedEntity' }
+        - type: object
+          required: [relation_type]
+          properties:
+            relation_type: { type: string }
+    EventSource:
+      type: object
+      required: [id, source_type, title, support_type]
+      properties:
+        id: { type: string, format: uuid }
+        source_type: { type: string }
+        title: { type: string }
+        author: { type: [string, 'null'] }
+        edition: { type: [string, 'null'] }
+        publication_data: { type: [string, 'null'] }
+        citation_locator: { type: [string, 'null'] }
+        support_type: { type: string }
+        reliability_note: { type: [string, 'null'] }
+        url:
+          oneOf:
+            - { type: string, format: uri, pattern: '^https?://' }
+            - { type: 'null' }
+    EventDetail:
+      type: object
+      required: [id, slug, title_ar, start_date, date_display_ar, year_start_hijri, confidence, related_people, related_places, related_states, sources]
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        title_ar: { type: string }
+        title_en: { type: [string, 'null'] }
+        start_date: { $ref: '#/components/schemas/HistoricalDateDetail' }
+        end_date:
+          oneOf:
+            - { $ref: '#/components/schemas/HistoricalDateDetail' }
+            - { type: 'null' }
+        date_display_ar: { type: string }
+        date_display_en: { type: [string, 'null'] }
+        year_start_hijri: { type: integer }
+        year_end_hijri: { type: [integer, 'null'] }
+        gregorian_reference: { type: [string, 'null'] }
+        event_type:
+          oneOf:
+            - { $ref: '#/components/schemas/EventTypeDetail' }
+            - { type: 'null' }
+        summary_ar: { type: [string, 'null'] }
+        summary_en: { type: [string, 'null'] }
+        causes_ar: { type: [string, 'null'] }
+        consequences_ar: { type: [string, 'null'] }
+        importance: { type: [integer, 'null'], minimum: 1, maximum: 5 }
+        confidence:
+          type: string
+          enum: [high, medium, disputed, legendary/late-tradition]
+        primary_place:
+          oneOf:
+            - { $ref: '#/components/schemas/NamedEntity' }
+            - { type: 'null' }
+        related_people:
+          type: array
+          items: { $ref: '#/components/schemas/RelatedPerson' }
+        related_places:
+          type: array
+          items: { $ref: '#/components/schemas/RelatedPlace' }
+        related_states:
+          type: array
+          items: { $ref: '#/components/schemas/RelatedState' }
+        sources:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/EventSource' }
+    EventTypeDetail:
+      type: object
+      required: [code, name_ar, name_en]
+      properties:
+        code: { type: string }
+        name_ar: { type: string }
+        name_en: { type: string }

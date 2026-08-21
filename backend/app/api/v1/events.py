@@ -12,7 +12,17 @@ from app.services.events import get_published_event_detail
 router = APIRouter(prefix="/events", tags=["events"])
 
 
-@router.get("/{slug}", response_model=EventDetail)
+@router.get(
+    "/{slug}",
+    response_model=EventDetail,
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": (
+                "Unknown, non-public, unsourced, or confidence-unclassified event"
+            )
+        }
+    },
+)
 def event_detail(
     slug: str, session: Annotated[Session, Depends(get_session)]
 ) -> EventDetail:

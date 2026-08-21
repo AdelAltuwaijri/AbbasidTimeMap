@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { fetchEventDetail } from "@/features/events/api/event-client";
+import type { EventDetail } from "@/features/events/types";
 import { searchHistoricalEntities } from "@/features/search/api/search-client";
 import type { SearchResult } from "@/features/search/types";
 import { fetchTimelineState } from "@/features/timeline/api/timeline-client";
@@ -43,6 +44,121 @@ const BAGHDAD_RESULT = {
   navigation_event_id: "event-1",
   navigation_event_slug: "founding-of-baghdad",
 } satisfies SearchResult;
+
+const EVENT_RESULT = {
+  ...BAGHDAD_RESULT,
+  entity_type: "event",
+  id: "event-1",
+  slug: "founding-of-baghdad",
+  title_ar: "تأسيس بغداد",
+  title_en: "Founding of Baghdad",
+  subtitle_ar: "حدث سياسي في 145هـ",
+  confidence: "high",
+} satisfies SearchResult;
+
+const PERSON_RESULT = {
+  ...BAGHDAD_RESULT,
+  entity_type: "person",
+  id: "person-1",
+  slug: "al-mansur",
+  title_ar: "أبو جعفر المنصور",
+  title_en: "Al-Mansur",
+  subtitle_ar: "شخصية مرتبطة بحدث تأسيس بغداد",
+  confidence: "medium",
+} satisfies SearchResult;
+
+const EVENT_DETAIL = {
+  id: "event-1",
+  slug: "founding-of-baghdad",
+  title_ar: "تأسيس بغداد",
+  title_en: "Founding of Baghdad",
+  start_date: {
+    calendar: "hijri",
+    year: 145,
+    month: null,
+    day: null,
+    precision: "year",
+    circa: false,
+    display_label_ar: "145هـ",
+    display_label_en: "762 CE",
+  },
+  end_date: null,
+  date_display_ar: "145هـ",
+  date_display_en: "762 CE",
+  year_start_hijri: 145,
+  year_end_hijri: null,
+  gregorian_reference: "762 CE",
+  event_type: { code: "political", name_ar: "سياسي", name_en: "Political" },
+  summary_ar: "ملخص تاريخي موثق.",
+  summary_en: null,
+  causes_ar: "سبب تاريخي موثق.",
+  consequences_ar: "نتيجة تاريخية موثقة.",
+  importance: 3,
+  confidence: "high",
+  primary_place: {
+    id: "place-1",
+    slug: "baghdad",
+    name_ar: "بغداد",
+    name_en: "Baghdad",
+  },
+  related_people: [],
+  related_places: [],
+  related_states: [],
+  sources: [{
+    id: "source-1",
+    source_type: "scholarly_encyclopedia",
+    title: "مصدر تاريخي موثوق",
+    author: "مؤلف",
+    edition: null,
+    publication_data: "بيانات نشر",
+    url: "https://example.test/source",
+    citation_locator: "موضع الاستشهاد",
+    support_type: "direct",
+    reliability_note: null,
+  }],
+} satisfies EventDetail;
+
+function timelineWithBaghdad(year: number) {
+  const isEventYear = year === 145;
+  return {
+    year_hijri: year,
+    metadata: { calendar: "hijri" as const, granularity: "year" as const },
+    events: isEventYear
+      ? [{
+        id: "event-1",
+        slug: "founding-of-baghdad",
+        title_ar: "تأسيس بغداد",
+        event_type: "political",
+        year_start_hijri: 145,
+        year_end_hijri: null,
+        importance: 3,
+        confidence: "high",
+      }]
+      : [],
+    event_features: {
+      type: "FeatureCollection" as const,
+      features: isEventYear
+        ? [{
+          type: "Feature" as const,
+          id: "event-1",
+          geometry: { type: "Point" as const, coordinates: [44.36, 33.31] as [number, number] },
+          properties: {
+            id: "event-1",
+            slug: "founding-of-baghdad",
+            title_ar: "تأسيس بغداد",
+            entity_type: "event" as const,
+            event_type: "political",
+            year_start_hijri: 145,
+            year_end_hijri: null,
+            importance: 3,
+            confidence: "high",
+          },
+        }]
+        : [],
+    },
+    boundaries: { type: "FeatureCollection" as const, features: [] },
+  };
+}
 
 describe("MapWorkspace search isolation", () => {
   beforeEach(() => {
@@ -90,5 +206,36 @@ describe("MapWorkspace search isolation", () => {
     expect(screen.getByText("events-visible")).toBeInTheDocument();
     expect(screen.getByTestId("map-focus-request")).toHaveTextContent("no-focus");
     expect(fetchEventDetail).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["Event", EVENT_RESULT],
+    ["Person", PERSON_RESULT],
+  ] as const)("opens the same complete Event Experience from an %s search result", async (
+    _entityType,
+    result,
+  ) => {
+    vi.mocked(searchHistoricalEntities).mockResolvedValue({
+      query: result.title_ar,
+      results: [result],
+    });
+    vi.mocked(fetchTimelineState).mockImplementation(async (year) => timelineWithBaghdad(year));
+    vi.mocked(fetchEventDetail).mockResolvedValue(EVENT_DETAIL);
+    render(<MapWorkspace />);
+    const input = screen.getByRole("combobox", { name: "البحث في السجل التاريخي" });
+
+    fireEvent.change(input, { target: { value: result.title_ar } });
+    fireEvent.click(await screen.findByRole("option", { name: new RegExp(result.title_ar) }));
+
+    expect(await screen.findByRole("heading", { name: EVENT_DETAIL.title_ar })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "ماذا حدث؟" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "لماذا حدث؟" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "ماذا نتج عنه؟" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "المصادر التاريخية" })).toBeInTheDocument();
+    expect(screen.getByText("موثق بدرجة عالية")).toBeInTheDocument();
+    expect(fetchEventDetail).toHaveBeenCalledWith(
+      "founding-of-baghdad",
+      expect.any(AbortSignal),
+    );
   });
 });

@@ -77,5 +77,34 @@
 
 **Deferred scope:** Search state remains session-local. Shareable URL parameters are deferred, and numbers are not exposed as a fifth `year` result type in M-03.
 
+## DEC-018 — Public historical event experience projection
+
+**Decision:** M-04 extends the existing Event detail as an additive public
+projection over the current historical model; it introduces no duplicate content
+table or schema migration. Public reads require a published Event with at least one
+Source and a confidence classification. Structured start/end dates preserve stored
+precision, circa state, and labels alongside the existing compatibility fields.
+
+**Public content boundary:** Causes and consequences are displayed only from their
+curated Event fields. `HistoricalEvent.editorial_notes` and general `Source.notes`
+remain private because the model does not classify them for publication.
+Event-specific `EventSource.reliability_note` is eligible public provenance.
+Distinct citations retain their locator and support type; source URLs are links only
+when they use `http` or `https`.
+
+**Interaction:** Marker, Event-search, and Person-search paths use one Event
+Experience. Related Person and State controls resolve their exact M-03 Search
+result and reuse DEC-017's shared Timeline/map navigation; no profile, synthetic
+point/centroid, or modern political geometry is created. Successful event details
+may be cached in the current client session while request sequencing prevents stale
+replacement. Previous/next controls remain deferred because the Timeline contract
+does not define a canonical intra-year order.
+
+**Presentation:** The Arabic-first surface uses populated semantic sections rather
+than tabs, separates historical narrative from source cards, explains confidence
+without treating disagreement as falsehood, and preserves date uncertainty. It is
+a side drawer on larger screens and a scrollable bottom sheet on mobile with
+managed keyboard focus and Escape/close behavior.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.

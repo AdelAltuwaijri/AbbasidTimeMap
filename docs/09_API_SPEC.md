@@ -31,7 +31,28 @@ Returns event summaries suitable for timeline ticks/clusters.
 
 ## Events
 ### GET /events/{slug}
-Full event detail.
+Returns one published, source-proven, confidence-classified event. Unknown,
+non-public, unsourced, or confidence-unclassified records return `404`.
+
+The response keeps the established flat date fields and adds structured
+`start_date`/`end_date` objects containing the stored calendar, year, optional
+month/day, precision, circa flag, and Arabic/English display labels. This preserves
+single dates, year-only dates, mixed-precision ranges, approximate/circa dates, and
+disputed dates without calculating unsupported precision. Plain stored Gregorian
+labels remain valid Gregorian references; conversion is not inferred at read time.
+
+The public detail includes, when stored:
+
+- Arabic/English titles and summaries, type, primary place, importance, and confidence;
+- curated `causes_ar` and `consequences_ar` only—missing values remain missing;
+- distinct related People, Places, and States with association metadata;
+- distinct sources with identity/type, bibliography, event-specific citation
+  locator, support type, reliability note, and a valid `http`/`https` URL.
+
+`editorial_notes` and general Source `notes` are not public fields. Relationship
+machine codes remain API metadata and are not presented as untranslated Arabic UI
+labels. The embedded source list is deterministic and deduplicated by source
+identity, not by title.
 
 ### GET /events?year_hijri=145&type=battle
 Filtered event list.
@@ -112,7 +133,9 @@ A valid no-match query returns `200` with `{"query":"…","results":[]}`. Missin
 
 ## Sources
 ### GET /events/{slug}/sources
-Returns source references and notes.
+Returns source references and, when present, only the event-specific
+`EventSource.reliability_note` classified for public display. General
+`Source.notes` is never exposed by this public endpoint.
 
 ## GeoJSON
 Map endpoints may return GeoJSON FeatureCollection where appropriate.

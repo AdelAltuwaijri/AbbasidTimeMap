@@ -40,18 +40,31 @@ It displays:
 - highlighted selected event
 
 ## Event interaction
-Clicking a marker opens a right-side drawer containing:
+Clicking a marker or selecting an Event/Person search context opens the same Event
+Experience. It is a side drawer on larger screens and a scrollable bottom sheet on
+mobile. It contains only populated, curated sections:
+
 - title
-- date
+- uncertainty-aware Hijri date and stored Gregorian reference
 - event category
-- image/reconstruction placeholder
 - summary
 - causes
-- impact
-- people
-- sources
-- confidence
-- AI actions when enabled
+- consequences
+- primary and related places
+- related people and states
+- source citations and support metadata
+- importance and confidence explanation
+
+Related people and states reuse Search's shared time/map navigation; they do not
+open profile pages. Historical claims and citation cards remain visually distinct.
+Internal editorial notes are never displayed. AI actions and reconstructions remain
+future, separately labeled scope.
+
+The surface provides semantic headings, a persistent accessible close control,
+Escape dismissal, managed/contained focus, focus return where the initiating
+control still exists, and internal scrolling. Closing preserves the year, camera,
+and layers; changing to a year where the event is inactive closes it. Successfully
+fetched details may be cached for the current client session.
 
 ## Layer panel
 Persistent or collapsible.

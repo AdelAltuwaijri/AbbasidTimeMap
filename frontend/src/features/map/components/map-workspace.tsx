@@ -4,7 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fetchEventDetail } from "@/features/events/api/event-client";
 import { EventDrawer } from "@/features/events/components/event-drawer";
-import type { EventDetail } from "@/features/events/types";
+import type {
+  EventDetail,
+  RelatedNavigationState,
+  RelatedNavigationTarget,
+} from "@/features/events/types";
+import { searchHistoricalEntities } from "@/features/search/api/search-client";
 import {
   SearchCommand,
   type SearchCommandHandle,
@@ -52,7 +57,9 @@ interface DrawerTarget {
 }
 
 interface PendingNavigation {
+  relatedNavigationKey?: string;
   requestId: number;
+  restoreSearchFocus: boolean;
   result: SearchResult;
   targetYear: number;
 }
@@ -73,15 +80,35 @@ export function MapWorkspace() {
   const [focusRequest, setFocusRequest] = useState<MapFocusRequest | null>(null);
   const [selectedSearchContext, setSelectedSearchContext] = useState<SearchResult | null>(null);
   const [navigationAnnouncement, setNavigationAnnouncement] = useState("");
+  const [relatedNavigationState, setRelatedNavigationState] = useState<RelatedNavigationState>({
+    status: "idle",
+  });
   const searchCommandRef = useRef<SearchCommandHandle>(null);
   const navigationRequestIdRef = useRef(0);
   const detailRequestIdRef = useRef(0);
+  const relatedNavigationRequestIdRef = useRef(0);
+  const detailCacheRef = useRef(new Map<string, EventDetail>());
   const drawerTargetRef = useRef<DrawerTarget | null>(null);
   const pendingNavigationRef = useRef<PendingNavigation | null>(null);
+  const relatedNavigationControllerRef = useRef<AbortController | null>(null);
 
   const updateDrawerTarget = useCallback((target: DrawerTarget | null) => {
     drawerTargetRef.current = target;
     setDrawerTarget(target);
+  }, []);
+
+  const openDrawer = useCallback((target: DrawerTarget) => {
+    updateDrawerTarget(target);
+    const cached = detailCacheRef.current.get(target.slug);
+    setDetailState(cached ? { status: "ready", detail: cached } : { status: "loading" });
+    setRelatedNavigationState({ status: "idle" });
+  }, [updateDrawerTarget]);
+
+  const cancelRelatedNavigation = useCallback(() => {
+    relatedNavigationControllerRef.current?.abort();
+    relatedNavigationControllerRef.current = null;
+    relatedNavigationRequestIdRef.current += 1;
+    setRelatedNavigationState({ status: "idle" });
   }, []);
 
   const applyPendingNavigation = useCallback((
@@ -103,11 +130,10 @@ export function MapWorkspace() {
       setSelectedSearchContext(null);
       dispatch({ type: "select-event", eventId: marker?.properties.id ?? null });
       if (navigationEventSlug) {
-        updateDrawerTarget({
-          restoreSearchFocus: true,
+        openDrawer({
+          restoreSearchFocus: pending.restoreSearchFocus,
           slug: navigationEventSlug,
         });
-        setDetailState({ status: "loading" });
       } else {
         updateDrawerTarget(null);
         setDetailState(null);
@@ -119,9 +145,10 @@ export function MapWorkspace() {
       setSelectedSearchContext(result);
     }
 
+    setRelatedNavigationState({ status: "idle" });
     setNavigationAnnouncement(createNavigationAnnouncement(result, pending.targetYear));
     pendingNavigationRef.current = null;
-  }, [dispatch, updateDrawerTarget]);
+  }, [dispatch, openDrawer, updateDrawerTarget]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -158,6 +185,16 @@ export function MapWorkspace() {
       })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
+        const pending = pendingNavigationRef.current;
+        if (pending?.targetYear === requestedYear) {
+          pendingNavigationRef.current = null;
+          if (pending.relatedNavigationKey) {
+            setRelatedNavigationState({
+              status: "error",
+              key: pending.relatedNavigationKey,
+            });
+          }
+        }
         setLoadedTimeline(null);
         setBoundaries(EMPTY_BOUNDARIES);
         setMapData({
@@ -178,12 +215,18 @@ export function MapWorkspace() {
 
   useEffect(() => {
     if (!drawerTarget) return;
+    const cached = detailCacheRef.current.get(drawerTarget.slug);
+    if (cached) {
+      setDetailState({ status: "ready", detail: cached });
+      return;
+    }
     const controller = new AbortController();
     const requestId = ++detailRequestIdRef.current;
 
     fetchEventDetail(drawerTarget.slug, controller.signal)
       .then((detail) => {
         if (controller.signal.aborted || detailRequestIdRef.current !== requestId) return;
+        detailCacheRef.current.set(drawerTarget.slug, detail);
         setDetailState({ status: "ready", detail });
       })
       .catch(() => {
@@ -195,6 +238,7 @@ export function MapWorkspace() {
   }, [detailRetryKey, drawerTarget]);
 
   const selectMarkerEvent = useCallback((eventId: string | null) => {
+    cancelRelatedNavigation();
     pendingNavigationRef.current = null;
     setSelectedSearchContext(null);
     setNavigationAnnouncement("");
@@ -217,46 +261,98 @@ export function MapWorkspace() {
       kind: "point",
       coordinates: feature.geometry.coordinates,
     });
-    updateDrawerTarget({ restoreSearchFocus: false, slug: feature.properties.slug });
-    setDetailState({ status: "loading" });
+    openDrawer({ restoreSearchFocus: false, slug: feature.properties.slug });
     dispatch({ type: "select-event", eventId });
-  }, [dispatch, mapData.data.features, updateDrawerTarget]);
+  }, [cancelRelatedNavigation, dispatch, mapData.data.features, openDrawer, updateDrawerTarget]);
 
-  const selectSearchResult = useCallback((result: SearchResult) => {
+  const selectSearchResult = useCallback((
+    result: SearchResult,
+    options?: {
+      preserveDrawerUntilReady?: boolean;
+      relatedNavigationKey?: string;
+      restoreSearchFocus?: boolean;
+    },
+  ) => {
+    cancelRelatedNavigation();
     const requestId = ++navigationRequestIdRef.current;
     const targetYear = clampTimelineYear(result.relevant_hijri_year);
-    const pending = { requestId, result, targetYear };
+    const preserveDrawer = Boolean(options?.preserveDrawerUntilReady && drawerTargetRef.current);
+    const pending = {
+      relatedNavigationKey: options?.relatedNavigationKey,
+      requestId,
+      restoreSearchFocus: options?.restoreSearchFocus ?? true,
+      result,
+      targetYear,
+    };
 
     pendingNavigationRef.current = pending;
-    updateDrawerTarget(null);
-    setDetailState(null);
-    dispatch({ type: "select-event", eventId: null });
+    if (!preserveDrawer) {
+      updateDrawerTarget(null);
+      setDetailState(null);
+      dispatch({ type: "select-event", eventId: null });
+      setFocusRequest(null);
+    }
     setSelectedSearchContext(null);
-    setFocusRequest(null);
     setNavigationAnnouncement("");
     if (targetYear !== timelineState.selectedYear) {
       setLoadedTimeline(null);
     } else if (loadedTimeline?.year_hijri === targetYear) {
       applyPendingNavigation(pending, loadedTimeline);
+    } else if (mapData.status === "error") {
+      setRetryKey((key) => key + 1);
     }
     timelineDispatch({ type: "navigate", year: targetYear });
   }, [
     applyPendingNavigation,
+    cancelRelatedNavigation,
     dispatch,
     loadedTimeline,
+    mapData.status,
     timelineDispatch,
     timelineState.selectedYear,
     updateDrawerTarget,
   ]);
 
   const dispatchTimelineAction = useCallback((action: TimelineAction) => {
+    cancelRelatedNavigation();
     pendingNavigationRef.current = null;
     setSelectedSearchContext(null);
     setNavigationAnnouncement("");
     timelineDispatch(action);
-  }, [timelineDispatch]);
+  }, [cancelRelatedNavigation, timelineDispatch]);
+
+  const navigateRelated = useCallback((target: RelatedNavigationTarget) => {
+    relatedNavigationControllerRef.current?.abort();
+    const controller = new AbortController();
+    const requestId = ++relatedNavigationRequestIdRef.current;
+    const key = `${target.entityType}:${target.slug}`;
+    relatedNavigationControllerRef.current = controller;
+    setRelatedNavigationState({ status: "loading", key });
+
+    searchHistoricalEntities(target.nameAr, controller.signal, 20)
+      .then((response) => {
+        if (controller.signal.aborted || requestId !== relatedNavigationRequestIdRef.current) return;
+        const exactResult = response.results.find(
+          (result) => result.entity_type === target.entityType && result.slug === target.slug,
+        );
+        if (!exactResult) throw new Error("Related historical entity was not resolved exactly");
+        selectSearchResult(exactResult, {
+          preserveDrawerUntilReady: true,
+          relatedNavigationKey: key,
+          restoreSearchFocus: drawerTargetRef.current?.restoreSearchFocus ?? false,
+        });
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted || requestId !== relatedNavigationRequestIdRef.current) return;
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        relatedNavigationControllerRef.current = null;
+        setRelatedNavigationState({ status: "error", key });
+      });
+  }, [selectSearchResult]);
 
   const closeDrawer = useCallback(() => {
+    cancelRelatedNavigation();
+    pendingNavigationRef.current = null;
     const shouldRestoreSearchFocus = drawerTarget?.restoreSearchFocus ?? false;
     updateDrawerTarget(null);
     setDetailState(null);
@@ -264,7 +360,7 @@ export function MapWorkspace() {
     if (shouldRestoreSearchFocus) {
       window.setTimeout(() => searchCommandRef.current?.focus(), 0);
     }
-  }, [dispatch, drawerTarget?.restoreSearchFocus, updateDrawerTarget]);
+  }, [cancelRelatedNavigation, dispatch, drawerTarget?.restoreSearchFocus, updateDrawerTarget]);
 
   return (
     <section className="relative isolate min-h-[34rem] flex-1 overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[#121713] shadow-2xl">
@@ -325,11 +421,14 @@ export function MapWorkspace() {
       {drawerTarget && detailState && (
         <EventDrawer
           onClose={closeDrawer}
+          onNavigateRelated={navigateRelated}
           onRetry={() => {
             setDetailState({ status: "loading" });
             setDetailRetryKey((key) => key + 1);
           }}
+          relatedNavigationState={relatedNavigationState}
           state={detailState}
+          targetSlug={drawerTarget.slug}
         />
       )}
     </section>

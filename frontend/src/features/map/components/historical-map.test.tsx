@@ -368,6 +368,48 @@ describe("HistoricalMap", () => {
     expect(mapMock.flyTo).toHaveBeenCalledOnce();
   });
 
+  it("keeps exactly the current event in the selected-marker layer through replacement and close", () => {
+    const { rerender } = renderHistoricalMap();
+    act(() => {
+      registeredHandler("load")?.();
+    });
+    mapMock.getLayer.mockImplementation((id) => (
+      [EVENT_LAYER_ID, SELECTED_EVENT_LAYER_ID].includes(String(id)) ? { id } : undefined
+    ));
+    mapMock.setFilter.mockClear();
+
+    const rerenderSelection = (selectedEventId: string | null) => rerender(
+      <HistoricalMap
+        boundaries={EMPTY_BOUNDARIES}
+        boundariesVisible
+        events={BAGHDAD_EVENT}
+        eventsVisible
+        focusRequest={null}
+        onSelectEvent={vi.fn()}
+        selectedEventId={selectedEventId}
+      />,
+    );
+
+    rerenderSelection("event-1");
+    expect(mapMock.setFilter).toHaveBeenLastCalledWith(
+      SELECTED_EVENT_LAYER_ID,
+      ["==", ["get", "id"], "event-1"],
+    );
+
+    rerenderSelection("event-2");
+    expect(mapMock.setFilter).toHaveBeenLastCalledWith(
+      SELECTED_EVENT_LAYER_ID,
+      ["==", ["get", "id"], "event-2"],
+    );
+
+    rerenderSelection(null);
+    expect(mapMock.setFilter).toHaveBeenLastCalledWith(
+      SELECTED_EVENT_LAYER_ID,
+      ["==", ["get", "id"], ""],
+    );
+    expect(mapConstructor).toHaveBeenCalledOnce();
+  });
+
   it("preserves the current camera when no focus was requested", () => {
     renderHistoricalMap();
 
