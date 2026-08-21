@@ -24,6 +24,7 @@ import type { BoundaryFeatureCollection, EventFeatureCollection } from "../types
 
 interface HistoricalMapProps {
   boundaries: BoundaryFeatureCollection;
+  boundariesVisible: boolean;
   events: EventFeatureCollection;
   eventsVisible: boolean;
   selectedEventId: string | null;
@@ -32,6 +33,7 @@ interface HistoricalMapProps {
 
 export function HistoricalMap({
   boundaries,
+  boundariesVisible,
   events,
   eventsVisible,
   selectedEventId,
@@ -41,7 +43,8 @@ export function HistoricalMap({
   const mapRef = useRef<Map | null>(null);
   const eventsRef = useRef(events);
   const boundariesRef = useRef(boundaries);
-  const visibilityRef = useRef(eventsVisible);
+  const boundariesVisibilityRef = useRef(boundariesVisible);
+  const eventsVisibilityRef = useRef(eventsVisible);
   const selectedIdRef = useRef(selectedEventId);
   const selectHandlerRef = useRef(onSelectEvent);
   const [basemapLoadFailed, setBasemapLoadFailed] = useState(false);
@@ -49,10 +52,16 @@ export function HistoricalMap({
   useEffect(() => {
     eventsRef.current = events;
   }, [events]);
-  useEffect(() => { boundariesRef.current = boundaries; }, [boundaries]);
+  useEffect(() => {
+    boundariesRef.current = boundaries;
+  }, [boundaries]);
 
   useEffect(() => {
-    visibilityRef.current = eventsVisible;
+    boundariesVisibilityRef.current = boundariesVisible;
+  }, [boundariesVisible]);
+
+  useEffect(() => {
+    eventsVisibilityRef.current = eventsVisible;
   }, [eventsVisible]);
 
   useEffect(() => {
@@ -99,18 +108,35 @@ export function HistoricalMap({
       if (!map.getSource(BOUNDARY_SOURCE_ID)) {
         map.addSource(BOUNDARY_SOURCE_ID, { type: "geojson", data: boundariesRef.current });
       }
+      const firstEventLayer = map.getLayer(EVENT_LAYER_ID)
+        ? EVENT_LAYER_ID
+        : map.getLayer(SELECTED_EVENT_LAYER_ID)
+          ? SELECTED_EVENT_LAYER_ID
+          : undefined;
       if (!map.getLayer(BOUNDARY_LAYER_ID)) {
-        map.addLayer({ id: BOUNDARY_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "fill", paint: { "fill-color": "#c99745", "fill-opacity": 0.12 } });
+        map.addLayer({
+          id: BOUNDARY_LAYER_ID,
+          source: BOUNDARY_SOURCE_ID,
+          type: "fill",
+          layout: { visibility: boundariesVisibilityRef.current ? "visible" : "none" },
+          paint: { "fill-color": "#c99745", "fill-opacity": 0.12 },
+        }, firstEventLayer);
       }
       if (!map.getLayer(BOUNDARY_OUTLINE_LAYER_ID)) {
-        map.addLayer({ id: BOUNDARY_OUTLINE_LAYER_ID, source: BOUNDARY_SOURCE_ID, type: "line", paint: { "line-color": "#c99745", "line-width": 1.5 } });
+        map.addLayer({
+          id: BOUNDARY_OUTLINE_LAYER_ID,
+          source: BOUNDARY_SOURCE_ID,
+          type: "line",
+          layout: { visibility: boundariesVisibilityRef.current ? "visible" : "none" },
+          paint: { "line-color": "#c99745", "line-width": 1.5 },
+        }, firstEventLayer);
       }
       if (!map.getLayer(EVENT_LAYER_ID)) {
         map.addLayer({
           id: EVENT_LAYER_ID,
           source: EVENT_SOURCE_ID,
           type: "circle",
-          layout: { visibility: visibilityRef.current ? "visible" : "none" },
+          layout: { visibility: eventsVisibilityRef.current ? "visible" : "none" },
           paint: {
             "circle-color": "#c99745",
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 5, 8, 9],
@@ -125,7 +151,7 @@ export function HistoricalMap({
           id: SELECTED_EVENT_LAYER_ID,
           source: EVENT_SOURCE_ID,
           type: "circle",
-          layout: { visibility: visibilityRef.current ? "visible" : "none" },
+          layout: { visibility: eventsVisibilityRef.current ? "visible" : "none" },
           paint: {
             "circle-color": "#f8e3a7",
             "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 9, 8, 14],
@@ -166,6 +192,18 @@ export function HistoricalMap({
     const source = mapRef.current?.getSource(BOUNDARY_SOURCE_ID) as GeoJSONSource | undefined;
     source?.setData(boundaries);
   }, [boundaries]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const visibility = boundariesVisible ? "visible" : "none";
+    if (map.getLayer(BOUNDARY_LAYER_ID)) {
+      map.setLayoutProperty(BOUNDARY_LAYER_ID, "visibility", visibility);
+    }
+    if (map.getLayer(BOUNDARY_OUTLINE_LAYER_ID)) {
+      map.setLayoutProperty(BOUNDARY_OUTLINE_LAYER_ID, "visibility", visibility);
+    }
+  }, [boundariesVisible]);
 
   useEffect(() => {
     const map = mapRef.current;

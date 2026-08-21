@@ -1,0 +1,34 @@
+{
+  "counts": {
+    "boundaries": 3,
+    "sources": 12,
+    "states": 1
+  },
+  "periods": [
+    {
+      "slug": "abbasid-extent-132-143",
+      "state_slug": "abbasid-caliphate",
+      "valid_from_hijri": 132,
+      "valid_to_hijri": 143
+    },
+    {
+      "slug": "abbasid-extent-144-154",
+      "state_slug": "abbasid-caliphate",
+      "valid_from_hijri": 144,
+      "valid_to_hijri": 154
+    },
+    {
+      "slug": "abbasid-extent-155-170",
+      "state_slug": "abbasid-caliphate",
+      "valid_from_hijri": 155,
+      "valid_to_hijri": 170
+    }
+  ],
+  "by_confidence": {
+    "medium": 3
+  },
+  "by_spatial_precision": {
+    "approximate": 3
+  },
+  "total_vertices": 144
+}

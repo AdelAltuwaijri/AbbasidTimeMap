@@ -6,7 +6,7 @@ from sqlalchemy.dialects import postgresql
 
 from app.db.session import get_session
 from app.main import app
-from app.services.timeline import _active_events_statement
+from app.services.timeline import _active_events_statement, _boundaries_statement
 
 
 class Result:
@@ -24,7 +24,15 @@ def event(*, start=145, end=None, geometry='{"type":"Point","coordinates":[44.36
 
 
 def boundary(*, start=140, end=150):
-    return SimpleNamespace(id=uuid4(), state_slug="state", state_name_ar="دولة اختبار", valid_from_hijri=start, valid_to_hijri=end, confidence="high", geometry_json='{"type":"MultiPolygon","coordinates":[]}')
+    return SimpleNamespace(
+        id=uuid4(), boundary_slug="state-extent-140-150", state_id=uuid4(),
+        state_slug="state", state_name_ar="دولة اختبار", valid_from_hijri=start,
+        valid_to_hijri=end, confidence="medium", spatial_precision="approximate",
+        source_count=2, primary_source_title="مرجع أكاديمي",
+        primary_source_url="https://example.test/reference",
+        reconstruction_note_ar="إعادة بناء تقريبية وليست حدًا دوليًا دقيقًا.",
+        geometry_json='{"type":"MultiPolygon","coordinates":[[[[30,20],[31,20],[31,21],[30,21],[30,20]]]]}',
+    )
 
 
 def request(event_rows, boundary_rows, year=145):
@@ -43,6 +51,13 @@ def test_timeline_state_returns_same_year_event_and_valid_boundary():
     assert len(payload["events"]) == 1
     assert len(payload["event_features"]["features"]) == 1
     assert len(payload["boundaries"]["features"]) == 1
+    properties = payload["boundaries"]["features"][0]["properties"]
+    assert properties["boundary_slug"] == "state-extent-140-150"
+    assert properties["state_slug"] == "state"
+    assert properties["confidence"] == "medium"
+    assert properties["spatial_precision"] == "approximate"
+    assert properties["source_count"] == 2
+    assert properties["primary_source_title"] == "مرجع أكاديمي"
 
 
 def test_timeline_state_keeps_range_event_and_omits_event_without_geometry():
@@ -75,3 +90,15 @@ def test_year_only_event_is_not_treated_as_open_ended():
     )
     assert "historical_events.end_date_id IS NULL" in sql
     assert "historical_dates_1.year = 146" in sql
+
+
+def test_boundary_query_is_inclusive_and_published_only():
+    sql = str(
+        _boundaries_statement(144).compile(
+            dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}
+        )
+    )
+    assert "political_boundaries.publication_status = 'published'" in sql
+    assert "historical_dates_1.year <= 144" in sql
+    assert "historical_dates_2.year >= 144" in sql
+    assert "boundary_sources" in sql

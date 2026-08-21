@@ -1,0 +1,111 @@
+[
+  {
+    "key": "kennedy-early-abbasid",
+    "source_type": "modern_academic_monograph",
+    "title": "The Early Abbasid Caliphate: A Political History",
+    "author": "Hugh Kennedy",
+    "edition": "First edition",
+    "publication_data": "Croom Helm, London, 1981",
+    "notes": "Modern political synthesis used to cross-check chronology, institutional significance, and provincial context."
+  },
+  {
+    "key": "tabari-vol-29",
+    "source_type": "later_classical_chronicle_scholarly_edition",
+    "title": "The History of al-Ṭabarī, Vol. 29: Al-Manṣūr and al-Mahdī, A.D. 763–786/A.H. 146–169",
+    "author": "al-Ṭabarī; translated by Hugh Kennedy",
+    "edition": "SUNY Series in Near Eastern Studies",
+    "publication_data": "State University of New York Press, 1990",
+    "url": "https://utpdistribution.com/9780791401439/the-history-of-al-abari-vol-29/",
+    "notes": "Annotated scholarly translation organized by Hijri year for the later reign of al-Manṣūr and reign of al-Mahdī."
+  },
+  {
+    "key": "iranica-abbasid-caliphate",
+    "source_type": "scholarly_encyclopedia",
+    "title": "ʿABBASID CALIPHATE",
+    "author": "C. E. Bosworth",
+    "publication_data": "Encyclopaedia Iranica, Vol. I, Fasc. 1, pp. 89–95",
+    "url": "https://www.iranicaonline.org/articles/abbasid-caliphate/",
+    "notes": "Scholarly overview of the revolution, early institutions, Iranian participation, and the Barmakids."
+  },
+  {
+    "key": "iranica-dabuyids",
+    "source_type": "scholarly_encyclopedia",
+    "title": "DABUYIDS",
+    "author": "Wilferd Madelung",
+    "publication_data": "Encyclopaedia Iranica, Vol. VI, Fasc. 5, pp. 541–544",
+    "url": "https://www.iranicaonline.org/articles/dabuyids-the-dynasty-of-espahbads-ruling-tabarestan-until-its-conquest-by-the-muslims-in-144-761/",
+    "notes": "مرجع مباشر لتأريخ فتح السهل الطبرستاني سنة 144هـ/761م ولتمييز السهل عن المرتفعات المستقلة نسبيًا."
+  },
+  {
+    "key": "iranica-bavandids",
+    "source_type": "scholarly_encyclopedia",
+    "title": "ĀL-E BĀVAND",
+    "author": "Wilferd Madelung",
+    "publication_data": "Encyclopaedia Iranica, Vol. I, Fasc. 7, pp. 747–753",
+    "url": "https://www.iranicaonline.org/articles/al-e-bavand/",
+    "notes": "يدعم إبقاء المرتفعات القزوينية خارج الغلاف المبسط رغم فتح السهول، ويعرض استمرار القوى المحلية وثورة 166–169هـ."
+  },
+  {
+    "key": "iranica-central-asia-iv",
+    "source_type": "scholarly_encyclopedia",
+    "title": "CENTRAL ASIA iv. In the Islamic Period up to the Mongols",
+    "author": "C. E. Bosworth",
+    "publication_data": "Encyclopaedia Iranica, Vol. V, Fasc. 2, pp. 169–176",
+    "url": "https://www.iranicaonline.org/articles/central-asia-iv/",
+    "notes": "مرجع إقليمي لخراسان وما وراء النهر؛ يبرر تمثيل ممرات الواحات الإدارية مع عدم تحويل أقصى الشرق إلى سيطرة متجانسة."
+  },
+  {
+    "key": "iranica-sistan-ii",
+    "source_type": "scholarly_encyclopedia",
+    "title": "SISTĀN ii. In the Islamic Period",
+    "author": "C. E. Bosworth",
+    "publication_data": "Encyclopaedia Iranica",
+    "url": "https://www.iranicaonline.org/articles/sistan-ii-islamic-period/",
+    "notes": "يدعم إدراج سجستان ضمن الإدارة الإقليمية واستبعاد زابل وكابل حيث تصف الأدلة غزوات أو جزية متقطعة لا إدارة ثابتة."
+  },
+  {
+    "key": "ottewill-soulsby-circle-world",
+    "source_type": "peer_reviewed_academic_article",
+    "title": "The circle of the world: the global diplomacy of caliph al-Manṣūr",
+    "author": "Samuel Ottewill-Soulsby",
+    "publication_data": "Bulletin of the School of Oriental and African Studies, Vol. 88, No. 3 (2025), pp. 523–538",
+    "url": "https://www.cambridge.org/core/journals/bulletin-of-the-school-of-oriental-and-african-studies/article/circle-of-the-world-the-global-diplomacy-of-caliph-almansur/3D2FEE751FC2BECD1FE4642750B991EC",
+    "notes": "تحليل محكم يفصل بين الدبلوماسية والجزية والسيطرة، ويؤرخ اكتمال استرداد شمال أفريقيا سنة 772م ويثبت استقلال الأندلس الفعلي."
+  },
+  {
+    "key": "el-hibri-abbasid-caliphate",
+    "source_type": "modern_academic_monograph",
+    "title": "The Abbasid Caliphate: A History",
+    "author": "Tayeb El-Hibri",
+    "publication_data": "Cambridge University Press, 2021",
+    "url": "https://www.cambridge.org/core/books/abs/abbasid-caliphate/from-revolution-to-foundations-750775/964B8BFBC3F1036D66303E1550CE1838",
+    "notes": "تركيب حديث وخرائط مرجعية للمقياس العام؛ لا تُنسخ منه حدود خطية ولا يُعامل بوصفه مسحًا كارتوغرافيًا."
+  },
+  {
+    "key": "sluglett-currie-atlas-islamic-history",
+    "source_type": "academic_historical_atlas",
+    "title": "Atlas of Islamic History",
+    "author": "Peter Sluglett and Andrew Currie",
+    "publication_data": "Routledge, 2015",
+    "url": "https://www.routledge.com/Atlas-of-Islamic-History-1st-Edition/Sluglett-Currie/p/book/9781138821309",
+    "notes": "مرجع تقاطعي للمقياس الإقليمي في الخريطتين 5–6؛ لم تُرقمن خطوطه ولم تُستخدم حدوده بوصفها أدلة مستقلة."
+  },
+  {
+    "key": "lestrange-lands-eastern-caliphate",
+    "source_type": "historical_geography_monograph",
+    "title": "The Lands of the Eastern Caliphate: Mesopotamia, Persia, and Central Asia from the Moslem Conquest to the Time of Timur",
+    "author": "Guy Le Strange",
+    "publication_data": "Cambridge University Press, 1905",
+    "url": "https://archive.org/details/b2935321x",
+    "notes": "جغرافيا تاريخية وخرائط مواضع للمضاهاة المكانية فقط؛ قِدم الدراسة يمنع استخدامها منفردة لإثبات وضع سياسي."
+  },
+  {
+    "key": "hamburg-military-foundations-2025",
+    "source_type": "academic_workshop_booklet",
+    "title": "Military Foundations of Political Rule in the Early Islamic West (7th–10th Centuries): Abstract Booklet",
+    "author": "RomanIslam Center for Comparative Empire and Transcultural Studies",
+    "publication_data": "Universität Hamburg, 2025, pp. 18–19",
+    "url": "https://www.romanislam.uni-hamburg.de/documents/workshops/military-foundations-abstract-booklet.pdf",
+    "notes": "قرينة مؤسسية مساعدة لتأريخ الإمامات الإباضية بطرابلس وقيام تاهرت؛ تُستخدم لتشديد الاستبعاد لا لرسم حد إيجابي."
+  }
+]

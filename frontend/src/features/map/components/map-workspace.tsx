@@ -10,6 +10,7 @@ import { EventDrawer } from "@/features/events/components/event-drawer";
 import type { EventDetail } from "@/features/events/types";
 import { useMapUiState } from "../state/map-ui-state";
 import type { BoundaryFeatureCollection, EventFeatureCollection, MapDataState } from "../types";
+import { BoundaryDetails } from "./boundary-details";
 import { HistoricalMap } from "./historical-map";
 import { LayerPanel } from "./layer-panel";
 
@@ -38,6 +39,7 @@ export function MapWorkspace() {
       .then((data) => { setBoundaries(data.boundaries); setMapData({ status: "ready", data: data.event_features }); })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
+        setBoundaries(EMPTY_BOUNDARIES);
         setMapData((currentMapData) => ({
           status: "error",
           data: currentMapData.data,
@@ -81,6 +83,7 @@ export function MapWorkspace() {
     <section className="relative isolate min-h-[34rem] flex-1 overflow-hidden rounded-3xl border border-[var(--border-subtle)] bg-[#121713] shadow-2xl">
       <HistoricalMap
         boundaries={boundaries}
+        boundariesVisible={uiState.layers.boundaries}
         events={mapData.data}
         eventsVisible={uiState.layers.events}
         onSelectEvent={selectEvent}
@@ -88,9 +91,13 @@ export function MapWorkspace() {
       />
 
       <LayerPanel
+        boundariesVisible={uiState.layers.boundaries}
         eventsVisible={uiState.layers.events}
+        onToggleBoundaries={() => dispatch({ type: "toggle-boundaries" })}
         onToggleEvents={() => dispatch({ type: "toggle-events" })}
       />
+
+      {uiState.layers.boundaries && <BoundaryDetails boundaries={boundaries} />}
 
       <TimelineBar dispatch={timelineDispatch} state={timelineState} />
 
@@ -98,7 +105,7 @@ export function MapWorkspace() {
         <MapNotice label="جارٍ تحميل بيانات الخريطة…" role="status" />
       )}
       {mapData.status === "error" && (
-        <MapNotice label="تعذّر تحميل بيانات الأحداث." role="alert">
+        <MapNotice label="تعذّر تحميل بيانات الخريطة التاريخية." role="alert">
           <button
             className="mt-3 rounded-lg border border-[var(--gold-primary)] px-3 py-1.5 text-xs text-[var(--gold-primary)]"
             onClick={() => {

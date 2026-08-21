@@ -9,6 +9,7 @@ from sqlalchemy import and_, case, func, or_, select
 from sqlalchemy.orm import Session, aliased
 
 from app.models.historical import (
+    BoundarySource,
     EventType,
     HistoricalCalendar,
     HistoricalDate,
@@ -16,6 +17,7 @@ from app.models.historical import (
     Place,
     PoliticalBoundary,
     PublicationStatus,
+    Source,
     State,
 )
 from app.schemas.map import (
@@ -27,6 +29,8 @@ from app.schemas.map import (
 from app.schemas.timeline import (
     BoundaryFeature,
     BoundaryFeatureCollection,
+    BoundaryFeatureProperties,
+    BoundaryGeometry,
     TimelineEventSummary,
     TimelineState,
 )
@@ -83,17 +87,49 @@ def _active_events_statement(year_hijri: int):
 def _boundaries_statement(year_hijri: int):
     valid_from = aliased(HistoricalDate)
     valid_to = aliased(HistoricalDate)
+    source_count = (
+        select(func.count(BoundarySource.source_id))
+        .where(BoundarySource.boundary_id == PoliticalBoundary.id)
+        .correlate(PoliticalBoundary)
+        .scalar_subquery()
+    )
+    primary_source_title = (
+        select(Source.title)
+        .join(BoundarySource, BoundarySource.source_id == Source.id)
+        .where(BoundarySource.boundary_id == PoliticalBoundary.id)
+        .order_by(Source.title, Source.id)
+        .limit(1)
+        .correlate(PoliticalBoundary)
+        .scalar_subquery()
+    )
+    primary_source_url = (
+        select(Source.url)
+        .join(BoundarySource, BoundarySource.source_id == Source.id)
+        .where(BoundarySource.boundary_id == PoliticalBoundary.id)
+        .order_by(Source.title, Source.id)
+        .limit(1)
+        .correlate(PoliticalBoundary)
+        .scalar_subquery()
+    )
     return (
         select(
-            PoliticalBoundary.id, State.slug.label("state_slug"), State.name_ar.label("state_name_ar"),
+            PoliticalBoundary.id, PoliticalBoundary.slug.label("boundary_slug"),
+            State.id.label("state_id"), State.slug.label("state_slug"),
+            State.name_ar.label("state_name_ar"),
             valid_from.year.label("valid_from_hijri"), valid_to.year.label("valid_to_hijri"),
             PoliticalBoundary.confidence_level.label("confidence"),
+            PoliticalBoundary.spatial_precision,
+            source_count.label("source_count"),
+            primary_source_title.label("primary_source_title"),
+            primary_source_url.label("primary_source_url"),
+            PoliticalBoundary.notes.label("reconstruction_note_ar"),
             func.ST_AsGeoJSON(PoliticalBoundary.geometry).label("geometry_json"),
         )
         .join(State, PoliticalBoundary.state_id == State.id)
         .join(valid_from, PoliticalBoundary.valid_from_date_id == valid_from.id)
         .outerjoin(valid_to, PoliticalBoundary.valid_to_date_id == valid_to.id)
         .where(
+            PoliticalBoundary.publication_status == PublicationStatus.PUBLISHED.value,
             valid_from.calendar == HistoricalCalendar.HIJRI.value,
             valid_from.year <= year_hijri,
             or_(PoliticalBoundary.valid_to_date_id.is_(None), and_(valid_to.calendar == HistoricalCalendar.HIJRI.value, valid_to.year >= year_hijri)),
@@ -127,10 +163,22 @@ def _boundary_feature(row: Any) -> BoundaryFeature | None:
     if geometry.get("type") not in {"Polygon", "MultiPolygon"}:
         return None
     return BoundaryFeature(
-        id=row.id, geometry=geometry,
-        properties={"state_slug": row.state_slug, "state_name_ar": row.state_name_ar,
-                    "valid_from_hijri": row.valid_from_hijri, "valid_to_hijri": row.valid_to_hijri,
-                    "confidence": row.confidence},
+        id=row.id,
+        geometry=BoundaryGeometry(**geometry),
+        properties=BoundaryFeatureProperties(
+            boundary_slug=row.boundary_slug,
+            state_id=row.state_id,
+            state_slug=row.state_slug,
+            state_name_ar=row.state_name_ar,
+            valid_from_hijri=row.valid_from_hijri,
+            valid_to_hijri=row.valid_to_hijri,
+            confidence=row.confidence,
+            spatial_precision=row.spatial_precision,
+            source_count=row.source_count,
+            primary_source_title=row.primary_source_title,
+            primary_source_url=row.primary_source_url,
+            reconstruction_note_ar=row.reconstruction_note_ar,
+        ),
     )
 
 

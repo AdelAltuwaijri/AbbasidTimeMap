@@ -40,7 +40,8 @@ The product is not a static history website. It is a **time-aware geographic his
 19. `19_SEED_DATA_PLAN.md` — initial Abbasid seed dataset
 20. `20_UI_DESIGN_SYSTEM.md` — visual system and component rules
 21. `21_DECISIONS_LOG.md` — architecture/product decisions
-22. `AGENTS.md` — concise instructions for Codex
+22. `22_POLITICAL_BOUNDARY_RECONSTRUCTION.md` — sourced method, periods, exclusions, and limitations for temporal political boundaries
+23. `AGENTS.md` — concise instructions for Codex
 
 ## Execution rule
 Codex must execute package-by-package from the roadmap. It must not expand scope or redesign core architecture without an explicit documented decision.

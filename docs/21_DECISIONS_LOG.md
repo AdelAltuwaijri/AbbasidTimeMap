@@ -55,5 +55,14 @@
 
 **Scope note:** M-01 creates application-owned historical place labels and relationships but no political boundary geometry. The physical base map remains governed by DEC-014; M-02 remains responsible for sourced temporal boundary reconstruction.
 
+## DEC-016 — Sourced temporal political-control envelopes
+**Decision:** Historical political boundaries are application-owned, source-linked WGS84 MultiPolygon records with inclusive Hijri validity intervals. M-02 uses three evidence-triggered periods—132–143, 144–154, and 155–170 AH—with `confidence_level=medium` and `spatial_precision=approximate`. Geometry is a conservative, low-vertex control envelope between historical and physical-geography anchors; it must never trace modern political or administrative borders.
+
+**Reason:** Eighth-century evidence describes governors, garrisons, taxation, cities, routes, and regional campaigns rather than surveyed frontier lines. Separating historical confidence from spatial precision exposes that epistemic limit. Raids, intermittent tribute, diplomatic contact, or nominal claims do not alone justify inclusion, and a change of caliph does not trigger new geometry without a sourced territorial or administrative change.
+
+**Publication rule:** Every published boundary requires direct provenance, explicit inclusion/exclusion methodology and limitations, valid non-empty SRID 4326 MultiPolygon geometry, and non-overlapping same-state validity unless a reviewed overlap is explicitly justified. Atlas outlines may be used only for macro cross-checking and must not be digitized as evidence. Geometry is rejected rather than silently auto-repaired.
+
+**DEC-014 relationship:** The base map remains physical reference only. Political geometry, historical places, and labels are temporal Abbasid TimeMap layers; no modern boundary or label source participates in the reconstruction.
+
 ## Future decisions
 Record material changes here instead of allowing implementation drift.

@@ -1,6 +1,7 @@
 """Historical ORM models."""
 
 from app.models.historical import (
+    BoundarySource,
     EventPlace,
     EventSource,
     EventState,
@@ -11,10 +12,12 @@ from app.models.historical import (
     Place,
     PoliticalBoundary,
     Source,
+    SpatialPrecision,
     State,
 )
 
 __all__ = [
-    "EventPlace", "EventSource", "EventState", "EventType", "HistoricalDate",
-    "HistoricalEvent", "Person", "Place", "PoliticalBoundary", "Source", "State",
+    "BoundarySource", "EventPlace", "EventSource", "EventState", "EventType",
+    "HistoricalDate", "HistoricalEvent", "Person", "Place", "PoliticalBoundary",
+    "Source", "SpatialPrecision", "State",
 ]

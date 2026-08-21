@@ -19,11 +19,31 @@ class TimelineEventSummary(BaseModel):
     confidence: str | None
 
 
+class BoundaryGeometry(BaseModel):
+    type: Literal["Polygon", "MultiPolygon"]
+    coordinates: list[Any]
+
+
+class BoundaryFeatureProperties(BaseModel):
+    boundary_slug: str
+    state_id: UUID
+    state_slug: str
+    state_name_ar: str
+    valid_from_hijri: int
+    valid_to_hijri: int | None
+    confidence: str
+    spatial_precision: str
+    source_count: int
+    primary_source_title: str | None
+    primary_source_url: str | None
+    reconstruction_note_ar: str | None
+
+
 class BoundaryFeature(BaseModel):
     type: Literal["Feature"] = "Feature"
     id: UUID
-    geometry: dict[str, Any]
-    properties: dict[str, Any]
+    geometry: BoundaryGeometry
+    properties: BoundaryFeatureProperties
 
 
 class BoundaryFeatureCollection(BaseModel):

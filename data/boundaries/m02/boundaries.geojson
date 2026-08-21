@@ -1,0 +1,529 @@
+{
+  "type": "FeatureCollection",
+  "name": "m02-early-abbasid-political-extent",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [28.5, 31.5],
+              [29.0, 24.0],
+              [31.0, 22.0],
+              [33.0, 24.0],
+              [35.0, 29.0],
+              [39.0, 30.0],
+              [44.0, 29.0],
+              [48.5, 30.0],
+              [52.0, 28.5],
+              [57.0, 26.5],
+              [61.0, 28.5],
+              [63.5, 33.0],
+              [64.5, 36.0],
+              [61.0, 37.5],
+              [54.0, 35.8],
+              [49.5, 36.0],
+              [47.5, 40.5],
+              [43.0, 39.5],
+              [40.0, 37.8],
+              [36.5, 37.0],
+              [35.5, 34.8],
+              [34.8, 31.5],
+              [31.5, 31.8],
+              [28.5, 31.5]
+            ]
+          ],
+          [
+            [
+              [35.0, 28.0],
+              [35.0, 24.0],
+              [37.0, 20.0],
+              [39.0, 15.0],
+              [42.0, 12.5],
+              [45.0, 14.0],
+              [43.0, 19.0],
+              [40.0, 24.5],
+              [36.5, 27.0],
+              [35.0, 28.0]
+            ]
+          ],
+          [
+            [
+              [63.5, 37.5],
+              [66.0, 36.5],
+              [69.5, 37.5],
+              [70.0, 40.0],
+              [67.5, 41.2],
+              [64.5, 40.2],
+              [63.5, 37.5]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "abbasid-extent-132-143",
+        "state_slug": "abbasid-caliphate",
+        "valid_from": {
+          "calendar": "hijri",
+          "year": 132,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "132هـ",
+          "display_label_en": "132 AH"
+        },
+        "valid_to": {
+          "calendar": "hijri",
+          "year": 143,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "143هـ",
+          "display_label_en": "143 AH"
+        },
+        "confidence_level": "medium",
+        "spatial_precision": "approximate",
+        "publication_status": "published",
+        "srid": 4326,
+        "reconstruction_notes_ar": "إعادة بناء تقريبية في صورة غلاف محافظ منخفض الرؤوس لمجال الإدارة والسيطرة العباسية القابل للدفاع بين 132 و143هـ؛ لا تمثل حدود دولة مساحية ولا تدّعي تجانس السيطرة داخل كل إقليم.",
+        "methodology_notes_ar": "رُبطت مراكز الإدارة والحاميات والطرق الإقليمية الموثقة بعُقد من الجغرافيا الطبيعية، وفُصل الحجاز واليمن وممر واحات ما وراء النهر إلى مضلعات مستقلة كي لا تُملأ الصحارى بوصفها مجالًا متجانسًا. لم تُتبع أي حدود دول أو محافظات حديثة.",
+        "limitations_notes_ar": "المصادر الحولية تصف مدنًا وولاةً وجيوشًا أكثر مما تصف خطوطًا ريفية. الصلاحية سنوية شاملة، والثورات المحلية لا تُحوَّل تلقائيًا إلى ثقوب، كما أن مواضع الساحل والأنهار مرجع تقريبي قد يخفي تغيرًا طبيعيًا لاحقًا.",
+        "overlap_justification": null,
+        "anchors": [
+          "وادي النيل والفسطاط بوصفهما عقدة الإدارة المصرية",
+          "الحجاز وممر المرتفعات الغربية نحو اليمن دون ملء داخل الجزيرة",
+          "الشام والجزيرة والعراق ومراكز الكوفة وواسط والبصرة",
+          "حافة الثغور جنوب طوروس دون التمدد إلى الأناضول البيزنطي",
+          "أذربيجان وأرمينية جنوب القوقاز مع التوقف قبل سهوب الخزر",
+          "الري وقومس وخراسان ومرو وهرات",
+          "سجستان دون زابل وكابل",
+          "ممر واحات بخارى وسمرقند في ما وراء النهر دون ادعاء سيطرة صحراوية متجانسة"
+        ],
+        "exclusions": [
+          "الأندلس",
+          "الأناضول البيزنطي وما وراء نطاق الثغور",
+          "سهوب الخزر وشمال القوقاز",
+          "مقورية وما وراء الحد النوبي",
+          "إفريقية والمغرب في فترة الاضطراب السابقة للاسترداد الموثق",
+          "سهل طبرستان ومرتفعات الديلم وجيلان قبل فتح 144هـ",
+          "زابل وكابل لأن الغزو أو الجزية المتقطعة لا يساويان إدارة إقليمية",
+          "أقصى فرغانة ومناطق الاتصالات الدبلوماسية أو الاسمية في الشرق",
+          "الصحارى الداخلية الواسعة التي لا تسند المصادر تمثيلها كسيطرة متجانسة"
+        ],
+        "sources": [
+          {
+            "source": "kennedy-early-abbasid",
+            "citation_locator": "Geographical Background, pp. 18–34; al-Manṣūr, pp. 57–95",
+            "support_type": "regional_control",
+            "reliability_note": "تركيب سياسي حديث يحدد بنية الأقاليم؛ لا يُستخدم لرسم خط دقيق."
+          },
+          {
+            "source": "iranica-abbasid-caliphate",
+            "citation_locator": "Early Abbasid administration and the Iranian provinces, pp. 89–95",
+            "support_type": "regional_control",
+            "reliability_note": "يدعم المجال الإداري العام في إيران، ولا يحدد حوافًا مساحية."
+          },
+          {
+            "source": "iranica-central-asia-iv",
+            "citation_locator": "Islamic period: Transoxiana under the caliphate and recurrent local opposition",
+            "support_type": "regional_control",
+            "reliability_note": "يبرر غلاف الواحات مع بقاء السيطرة متفاوتة ومحل احتجاج."
+          },
+          {
+            "source": "iranica-sistan-ii",
+            "citation_locator": "Early Islamic and Abbasid governors; campaigns against the Zunbil",
+            "support_type": "regional_control",
+            "reliability_note": "يفصل بين إدارة سجستان والغزو أو الجزية شرقها."
+          },
+          {
+            "source": "el-hibri-abbasid-caliphate",
+            "citation_locator": "Chapter 2, pp. 28–68; reference maps, pp. xxviii–xxxi",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة للمقياس والسياق فقط، وليست مصدر رقمنة للحواف."
+          },
+          {
+            "source": "sluglett-currie-atlas-islamic-history",
+            "citation_locator": "Maps 5–6",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة ماكروية؛ لم تُنسخ خطوط الأطلس."
+          },
+          {
+            "source": "lestrange-lands-eastern-caliphate",
+            "citation_locator": "Map 1 and regional place descriptions",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "استُخدم لتثبيت مواضع وممرات تاريخية فقط، مع مراعاة قِدم الدراسة."
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [28.5, 31.5],
+              [29.0, 24.0],
+              [31.0, 22.0],
+              [33.0, 24.0],
+              [35.0, 29.0],
+              [39.0, 30.0],
+              [44.0, 29.0],
+              [48.5, 30.0],
+              [52.0, 28.5],
+              [57.0, 26.5],
+              [61.0, 28.5],
+              [63.5, 33.0],
+              [64.5, 36.0],
+              [61.0, 37.5],
+              [54.0, 35.8],
+              [49.5, 36.0],
+              [47.5, 40.5],
+              [43.0, 39.5],
+              [40.0, 37.8],
+              [36.5, 37.0],
+              [35.5, 34.8],
+              [34.8, 31.5],
+              [31.5, 31.8],
+              [28.5, 31.5]
+            ]
+          ],
+          [
+            [
+              [35.0, 28.0],
+              [35.0, 24.0],
+              [37.0, 20.0],
+              [39.0, 15.0],
+              [42.0, 12.5],
+              [45.0, 14.0],
+              [43.0, 19.0],
+              [40.0, 24.5],
+              [36.5, 27.0],
+              [35.0, 28.0]
+            ]
+          ],
+          [
+            [
+              [63.5, 37.5],
+              [66.0, 36.5],
+              [69.5, 37.5],
+              [70.0, 40.0],
+              [67.5, 41.2],
+              [64.5, 40.2],
+              [63.5, 37.5]
+            ]
+          ],
+          [
+            [
+              [51.3, 36.2],
+              [52.0, 36.15],
+              [54.2, 36.55],
+              [54.0, 37.05],
+              [52.2, 36.8],
+              [51.3, 36.2]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "abbasid-extent-144-154",
+        "state_slug": "abbasid-caliphate",
+        "valid_from": {
+          "calendar": "hijri",
+          "year": 144,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "144هـ",
+          "display_label_en": "144 AH"
+        },
+        "valid_to": {
+          "calendar": "hijri",
+          "year": 154,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "154هـ",
+          "display_label_en": "154 AH"
+        },
+        "confidence_level": "medium",
+        "spatial_precision": "approximate",
+        "publication_status": "published",
+        "srid": 4326,
+        "reconstruction_notes_ar": "إعادة بناء تقريبية تحافظ على الغلاف المحافظ السابق وتضيف فقط سهل طبرستان الساحلي بعد الفتح المؤرخ في 144هـ/761م؛ لا تمثل حدًا مساحيًا، والمرتفعات القزوينية ليست مضمنة.",
+        "methodology_notes_ar": "أضيف مضلع صغير منخفض الرؤوس بمحاذاة السهل الجنوبي لبحر قزوين بدل توسيع كتلة إيران كلها شمالًا. يحفظ الفصل بين السهل المفتوح وبين الديلم وجيلان ومواطن القوى المحلية في الجبال، ولا يتبع حدودًا إدارية حديثة.",
+        "limitations_notes_ar": "لا تثبت سنة الفتح إدارة متجانسة لكل موضع في طبرستان، ولا تسمح الأخبار برسم خط بين السهل والجبل بدقة. الحافة تمثيل تحريري تقريبي، وتُسجل ثورة 166–169هـ كقيد لاحق لا كدليل على زوال الإقليم كله.",
+        "overlap_justification": null,
+        "anchors": [
+          "جميع عقد الغلاف المحافظ للفترة 132–143هـ",
+          "سهل طبرستان الساحلي جنوب بحر قزوين بعد فتح 144هـ",
+          "الري وقومس بوصفهما عقدتي اتصال جنوب جبال البرز",
+          "ممر واحات بخارى وسمرقند منفصلًا عن ملء الصحارى"
+        ],
+        "exclusions": [
+          "الأندلس",
+          "الأناضول البيزنطي وسهوب الخزر ومقورية",
+          "مرتفعات طبرستان والديلم وجيلان حيث استمرت قوى محلية",
+          "إفريقية والمغرب قبل الاسترداد المؤرخ سنة 155هـ",
+          "زابل وكابل وأقصى فرغانة ومناطق الجزية أو الاتصال غير الإداري",
+          "الصحارى الداخلية الواسعة غير المثبتة كسيطرة متجانسة"
+        ],
+        "sources": [
+          {
+            "source": "iranica-dabuyids",
+            "citation_locator": "Vol. VI/5, pp. 541–544; conquest of Ṭabaristān in 144/761",
+            "support_type": "territorial_change",
+            "reliability_note": "دليل أكاديمي مباشر على التاريخ وعلى تمييز السهل عن المرتفعات."
+          },
+          {
+            "source": "iranica-bavandids",
+            "citation_locator": "Opening historical section; local highland rule after the lowland conquest",
+            "support_type": "regional_control",
+            "reliability_note": "يمنع تعميم فتح السهل على الجبال القزوينية."
+          },
+          {
+            "source": "kennedy-early-abbasid",
+            "citation_locator": "Geographical Background, pp. 18–34; al-Manṣūr, pp. 57–95",
+            "support_type": "regional_control",
+            "reliability_note": "مرجع تركيب للغلاف الأساسي، لا لخطوط الحواف."
+          },
+          {
+            "source": "iranica-abbasid-caliphate",
+            "citation_locator": "Early Abbasid administration and the Iranian provinces, pp. 89–95",
+            "support_type": "regional_control",
+            "reliability_note": "يدعم استمرارية المجال الإداري العام."
+          },
+          {
+            "source": "iranica-central-asia-iv",
+            "citation_locator": "Islamic period: Transoxiana under the caliphate and recurrent local opposition",
+            "support_type": "regional_control",
+            "reliability_note": "يسند غلاف الواحات ويحد من ادعاء التجانس."
+          },
+          {
+            "source": "iranica-sistan-ii",
+            "citation_locator": "Early Islamic and Abbasid governors; campaigns against the Zunbil",
+            "support_type": "regional_control",
+            "reliability_note": "يسند إدراج سجستان واستبعاد مناطق الغزو شرقها."
+          },
+          {
+            "source": "el-hibri-abbasid-caliphate",
+            "citation_locator": "Chapter 2, pp. 28–68; reference maps, pp. xxviii–xxxi",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة للسياق والمقياس، دون رقمنة حدود."
+          },
+          {
+            "source": "sluglett-currie-atlas-islamic-history",
+            "citation_locator": "Maps 5–6",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة ماكروية فقط."
+          },
+          {
+            "source": "lestrange-lands-eastern-caliphate",
+            "citation_locator": "Map 1 and regional place descriptions",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مرجع مواضع وممرات مع التحفظ على قِدم الدراسة."
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [28.5, 31.5],
+              [29.0, 24.0],
+              [31.0, 22.0],
+              [33.0, 24.0],
+              [35.0, 29.0],
+              [39.0, 30.0],
+              [44.0, 29.0],
+              [48.5, 30.0],
+              [52.0, 28.5],
+              [57.0, 26.5],
+              [61.0, 28.5],
+              [63.5, 33.0],
+              [64.5, 36.0],
+              [61.0, 37.5],
+              [54.0, 35.8],
+              [49.5, 36.0],
+              [47.5, 40.5],
+              [43.0, 39.5],
+              [40.0, 37.8],
+              [36.5, 37.0],
+              [35.5, 34.8],
+              [34.8, 31.5],
+              [31.5, 31.8],
+              [28.5, 31.5]
+            ]
+          ],
+          [
+            [
+              [35.0, 28.0],
+              [35.0, 24.0],
+              [37.0, 20.0],
+              [39.0, 15.0],
+              [42.0, 12.5],
+              [45.0, 14.0],
+              [43.0, 19.0],
+              [40.0, 24.5],
+              [36.5, 27.0],
+              [35.0, 28.0]
+            ]
+          ],
+          [
+            [
+              [63.5, 37.5],
+              [66.0, 36.5],
+              [69.5, 37.5],
+              [70.0, 40.0],
+              [67.5, 41.2],
+              [64.5, 40.2],
+              [63.5, 37.5]
+            ]
+          ],
+          [
+            [
+              [51.3, 36.2],
+              [52.0, 36.15],
+              [54.2, 36.55],
+              [54.0, 37.05],
+              [52.2, 36.8],
+              [51.3, 36.2]
+            ]
+          ],
+          [
+            [
+              [8.3, 37.0],
+              [9.0, 33.0],
+              [12.0, 30.5],
+              [15.0, 29.5],
+              [16.5, 31.0],
+              [14.0, 32.0],
+              [12.0, 34.0],
+              [10.8, 37.0],
+              [8.3, 37.0]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "slug": "abbasid-extent-155-170",
+        "state_slug": "abbasid-caliphate",
+        "valid_from": {
+          "calendar": "hijri",
+          "year": 155,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "155هـ",
+          "display_label_en": "155 AH"
+        },
+        "valid_to": {
+          "calendar": "hijri",
+          "year": 170,
+          "precision": "year",
+          "circa": false,
+          "display_label_ar": "170هـ",
+          "display_label_en": "170 AH"
+        },
+        "confidence_level": "medium",
+        "spatial_precision": "approximate",
+        "publication_status": "published",
+        "srid": 4326,
+        "reconstruction_notes_ar": "إعادة بناء تقريبية تحافظ على الغلاف المحافظ وسهل طبرستان، وتضيف من 155هـ غلافًا منفصلًا لممر طرابلس–القيروان/إفريقية بعد حملة الاسترداد؛ لا تمثل حدًا مساحيًا ولا تمتد إلى كامل المغرب.",
+        "methodology_notes_ar": "مثّلت إفريقية بمضلع ساحلي-داخلي مبسط حول مراكز الحكم والاتصال، لا بشريط يتبع ساحلًا أو حدود تونس وليبيا الحديثة. بقيت تاهرت والمغرب الأوسط والأقصى خارج الغلاف، وبقيت جميع المكونات التاريخية طبقة تطبيق مستقلة عن الـBasemap.",
+        "limitations_notes_ar": "تأريخ الحملة أو استعادة القيروان لا يبرهن سيطرة متجانسة على كل الريف. تقلب القوى الإباضية والمحلية يجعل الحافة شديدة التقريب، كما أن ثورة طبرستان 166–169هـ قيد مهم لا يكفي وحده لإسقاط كامل السهل من السجل السنوي المجمل.",
+        "overlap_justification": null,
+        "anchors": [
+          "جميع عقد الغلاف المحافظ للفترة 144–154هـ",
+          "القيروان بوصفها مركزًا إداريًا لإفريقية",
+          "ممر طرابلس الساحلي والداخلي بوصفه اتصالًا دفاعيًا لا حدًا حديثًا",
+          "سهل طبرستان مع بقاء المرتفعات خارج الغلاف"
+        ],
+        "exclusions": [
+          "الأندلس",
+          "تاهرت الرستمية والمغرب الأوسط والمغرب الأقصى",
+          "الأناضول البيزنطي وسهوب الخزر ومقورية",
+          "مرتفعات الديلم وجيلان والمناطق القزوينية ذات الحكم المحلي",
+          "زابل وكابل وأقصى فرغانة ومناطق الجزية أو الدبلوماسية دون إدارة",
+          "الصحارى الداخلية الواسعة غير المثبتة كسيطرة متجانسة"
+        ],
+        "sources": [
+          {
+            "source": "tabari-vol-29",
+            "citation_locator": "The Events of the Year 155, p. 69",
+            "support_type": "chronology",
+            "reliability_note": "يثبت الحدث والسنة في ترجمة علمية لمصدر حولي؛ لا يعطي خطًا جغرافيًا."
+          },
+          {
+            "source": "ottewill-soulsby-circle-world",
+            "citation_locator": "pp. 523–538; discussion of North Africa, al-Andalus, and diplomatic reach",
+            "support_type": "territorial_change",
+            "reliability_note": "يفصل بوضوح بين الاسترداد الإقليمي وبين الدبلوماسية أو الادعاء، ويؤرخ اكتمال الحملة سنة 772م."
+          },
+          {
+            "source": "hamburg-military-foundations-2025",
+            "citation_locator": "pp. 18–19; Ibadi imamates in Tripolitania and Tāhart chronology",
+            "support_type": "regional_exclusion",
+            "reliability_note": "قرينة مساعدة لتضييق الغلاف واستبعاد تاهرت؛ ليست وحدها أساس الحد الإيجابي."
+          },
+          {
+            "source": "iranica-dabuyids",
+            "citation_locator": "Vol. VI/5, pp. 541–544; conquest of Ṭabaristān in 144/761",
+            "support_type": "territorial_change",
+            "reliability_note": "يسند استمرار إدراج السهل الطبرستاني في الغلاف المجمل."
+          },
+          {
+            "source": "iranica-bavandids",
+            "citation_locator": "Local highland rule; revolt in 166–169 AH",
+            "support_type": "regional_exclusion",
+            "reliability_note": "يسند استبعاد المرتفعات وتسجيل الثورة كقيد لا كخط انسحاب كامل."
+          },
+          {
+            "source": "kennedy-early-abbasid",
+            "citation_locator": "al-Manṣūr, pp. 57–95; al-Mahdī and al-Hādī, pp. 96–114",
+            "support_type": "regional_control",
+            "reliability_note": "تركيب سياسي للغلاف الأساسي وتطور الإدارة، لا مصدر لخط مساحي."
+          },
+          {
+            "source": "iranica-abbasid-caliphate",
+            "citation_locator": "Early Abbasid administration and the Iranian provinces, pp. 89–95",
+            "support_type": "regional_control",
+            "reliability_note": "يدعم استمرار المجال الإداري العام في الشرق."
+          },
+          {
+            "source": "iranica-central-asia-iv",
+            "citation_locator": "Islamic period: Transoxiana under the caliphate and recurrent local opposition",
+            "support_type": "regional_control",
+            "reliability_note": "يسند غلاف الواحات مع الإفصاح عن تفاوت السيطرة والثورات."
+          },
+          {
+            "source": "iranica-sistan-ii",
+            "citation_locator": "Early Islamic and Abbasid governors; campaigns against the Zunbil",
+            "support_type": "regional_control",
+            "reliability_note": "يسند إدراج سجستان واستبعاد مناطق الغزو المتقطع شرقها."
+          },
+          {
+            "source": "el-hibri-abbasid-caliphate",
+            "citation_locator": "Chapter 2, pp. 28–68; reference maps, pp. xxviii–xxxi",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة للسياق والمقياس فقط."
+          },
+          {
+            "source": "sluglett-currie-atlas-islamic-history",
+            "citation_locator": "Maps 5–6",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة ماكروية دون رقمنة الخطوط."
+          },
+          {
+            "source": "lestrange-lands-eastern-caliphate",
+            "citation_locator": "Map 1 and regional place descriptions",
+            "support_type": "geographic_cross_check",
+            "reliability_note": "مضاهاة مواضع وممرات فقط مع التحفظ على قِدم الدراسة."
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import {
   BASEMAP_LAYER_ID,
   BASEMAP_SOURCE_ID,
   BASEMAP_TILE_URL,
+  BOUNDARY_SOURCE_ID,
   EVENT_SOURCE_ID,
   createMapStyle,
 } from "./map-config";
@@ -21,6 +22,7 @@ describe("map configuration", () => {
       maxzoom: 8,
     });
     expect(style.sources).not.toHaveProperty(EVENT_SOURCE_ID);
+    expect(style.sources).not.toHaveProperty(BOUNDARY_SOURCE_ID);
     expect(style.layers).toContainEqual(
       expect.objectContaining({
         id: BASEMAP_LAYER_ID,

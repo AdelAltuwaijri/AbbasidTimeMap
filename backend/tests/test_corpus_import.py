@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import Session
 
 from app.models.historical import (
+    BoundarySource,
     EventPerson,
     EventPlace,
     EventSource,
@@ -38,6 +39,7 @@ def counts(session: Session) -> dict[str, int]:
         "event_states": EventState,
         "event_sources": EventSource,
         "boundaries": PoliticalBoundary,
+        "boundary_sources": BoundarySource,
     }
     return {
         name: session.scalar(select(func.count()).select_from(model)) or 0
@@ -51,7 +53,7 @@ def test_import_is_idempotent_reuses_f05_and_never_adds_boundaries():
     corpus = load_corpus()
 
     with Session(engine) as session:
-        boundaries_before = counts(session)["boundaries"]
+        counts_before = counts(session)
         first = import_corpus(session, corpus)
         baghdad_id = session.scalar(
             select(HistoricalEvent.id).where(HistoricalEvent.slug == "founding-of-baghdad")
@@ -66,7 +68,8 @@ def test_import_is_idempotent_reuses_f05_and_never_adds_boundaries():
     assert first == second
     assert first_counts == second_counts
     assert baghdad_id == second_baghdad_id
-    assert second_counts["boundaries"] == boundaries_before
+    assert second_counts["boundaries"] == counts_before["boundaries"]
+    assert second_counts["boundary_sources"] == counts_before["boundary_sources"]
     assert second_counts["events"] >= 42
 
 

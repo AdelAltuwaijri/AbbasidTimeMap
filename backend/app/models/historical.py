@@ -11,9 +11,11 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    Index,
     SmallInteger,
     String,
     Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -43,6 +45,12 @@ class PublicationStatus(StrEnum):
     REVIEWED = "reviewed"
     PUBLISHED = "published"
     ARCHIVED = "archived"
+
+
+class SpatialPrecision(StrEnum):
+    EXACT = "exact"
+    APPROXIMATE = "approximate"
+    DISPUTED = "disputed"
 
 
 def uuid_pk() -> Mapped[uuid.UUID]:
@@ -155,17 +163,59 @@ class State(Base):
     end_date_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("historical_dates.id"), nullable=True)
     relation_to_abbasid: Mapped[str | None] = mapped_column(String(128), nullable=True)
     events: Mapped[list[HistoricalEvent]] = relationship(secondary="event_states", back_populates="states")
+    boundaries: Mapped[list[PoliticalBoundary]] = relationship(back_populates="state")
 
 
 class PoliticalBoundary(Base):
     __tablename__ = "political_boundaries"
+    __table_args__ = (
+        CheckConstraint(
+            "confidence_level IN ('high', 'medium', 'approximate', 'disputed')",
+            name="ck_boundaries_confidence",
+        ),
+        CheckConstraint(
+            "publication_status IN ('draft', 'reviewed', 'published', 'archived')",
+            name="ck_boundaries_status",
+        ),
+        CheckConstraint(
+            "spatial_precision IN ('exact', 'approximate', 'disputed')",
+            name="ck_boundaries_spatial_precision",
+        ),
+        CheckConstraint("NOT ST_IsEmpty(geometry)", name="ck_boundaries_geometry_nonempty"),
+        CheckConstraint("ST_IsValid(geometry)", name="ck_boundaries_geometry_valid"),
+        CheckConstraint("ST_SRID(geometry) = 4326", name="ck_boundaries_geometry_srid"),
+        UniqueConstraint("slug", name="uq_political_boundaries_slug"),
+        Index("ix_political_boundaries_state_id", "state_id"),
+    )
+
     id = uuid_pk()
+    slug: Mapped[str] = mapped_column(String(255), nullable=False)
     state_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("states.id"), nullable=False)
     valid_from_date_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("historical_dates.id"), nullable=False)
     valid_to_date_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("historical_dates.id"), nullable=True)
     geometry: Mapped[object] = mapped_column(Geometry(geometry_type="MULTIPOLYGON", srid=WGS84_SRID), nullable=False)
     confidence_level: Mapped[str] = mapped_column(String(32), nullable=False)
+    spatial_precision: Mapped[str] = mapped_column(
+        String(32), default=SpatialPrecision.APPROXIMATE.value, nullable=False
+    )
+    publication_status: Mapped[str] = mapped_column(
+        String(32), default=PublicationStatus.DRAFT.value, nullable=False
+    )
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    methodology_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    limitations_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    overlap_justification: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    state: Mapped[State] = relationship(back_populates="boundaries")
+    valid_from_date: Mapped[HistoricalDate] = relationship(
+        foreign_keys=[valid_from_date_id]
+    )
+    valid_to_date: Mapped[HistoricalDate | None] = relationship(
+        foreign_keys=[valid_to_date_id]
+    )
+    sources: Mapped[list[Source]] = relationship(
+        secondary="boundary_sources", back_populates="boundaries"
+    )
 
 
 class Source(Base):
@@ -179,6 +229,22 @@ class Source(Base):
     url: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     events: Mapped[list[HistoricalEvent]] = relationship(secondary="event_sources", back_populates="sources")
+    boundaries: Mapped[list[PoliticalBoundary]] = relationship(
+        secondary="boundary_sources", back_populates="sources"
+    )
+
+
+class BoundarySource(Base):
+    __tablename__ = "boundary_sources"
+    boundary_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("political_boundaries.id", ondelete="CASCADE"), primary_key=True
+    )
+    source_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("sources.id", ondelete="CASCADE"), primary_key=True
+    )
+    citation_locator: Mapped[str | None] = mapped_column(Text, nullable=True)
+    support_type: Mapped[str] = mapped_column(String(64), nullable=False)
+    reliability_note: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 class EventPerson(Base):

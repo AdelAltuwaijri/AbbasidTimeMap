@@ -27,7 +27,32 @@ export interface EventFeatureCollection {
   features: EventFeature[];
 }
 
-export type BoundaryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon>;
+export interface BoundaryFeatureProperties {
+  boundary_slug: string;
+  state_id: string;
+  state_slug: string;
+  state_name_ar: string;
+  valid_from_hijri: number;
+  valid_to_hijri: number;
+  confidence: string;
+  spatial_precision: string;
+  source_count: number;
+  primary_source_title: string;
+  primary_source_url: string | null;
+  reconstruction_note_ar: string;
+}
+
+export interface BoundaryFeature {
+  type: "Feature";
+  id: string;
+  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon;
+  properties: BoundaryFeatureProperties;
+}
+
+export interface BoundaryFeatureCollection {
+  type: "FeatureCollection";
+  features: BoundaryFeature[];
+}
 
 export type MapDataState =
   | { status: "loading"; data: EventFeatureCollection }
